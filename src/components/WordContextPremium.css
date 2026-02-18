@@ -1,0 +1,91 @@
+/* Copy into src/components/WordContextPremium.css */
+
+.word-context-overlay-premium {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.word-context-modal-premium {
+  background: white;
+  border-radius: 24px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.context-header-premium {
+  background: linear-gradient(135deg, #1a1446, #0d7377);
+  color: white;
+  padding: 32px;
+  border-radius: 24px 24px 0 0;
+  position: relative;
+}
+
+.context-close-premium {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.arabic-display-premium {
+  font-size: 48px;
+  text-align: center;
+}
+
+.context-tabs-premium {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.tab-btn-premium {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.tab-btn-premium.active {
+  background: white;
+  color: #0d7377;
+}
+
+.context-content-premium {
+  padding: 32px;
+  min-height: 400px;
+}
+
+.premium-lock-premium {
+  text-align: center;
+  padding: 60px;
+}
+
+.upgrade-btn-premium {
+  background: linear-gradient(135deg, #d4af37, #f4e4c1);
+  color: #1a1446;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}

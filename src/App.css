@@ -1,3 +1,86 @@
+/* ==========================================
+   RAMADAN QURAN VOCABULARY APP - PEACEFUL & SPIRITUAL
+   Colors: Deep Purple, Gold, Teal, Cream, Starlight
+   ========================================== */
+
+/* ==========================================
+   CSS VARIABLES - RAMADAN DESIGN SYSTEM
+   ========================================== */
+:root {
+  /* Ramadan Color Palette */
+  --ramadan-night: #1a1446;        /* Deep night sky purple */
+  --ramadan-dusk: #2d1b69;         /* Twilight purple */
+  --ramadan-gold: #d4af37;         /* Golden accents */
+  --ramadan-moon: #f4e4c1;         /* Soft moonlight */
+  --ramadan-teal: #0d7377;         /* Peaceful teal */
+  --ramadan-mint: #14ffec;         /* Bright mint accent */
+  --ramadan-cream: #fef9e7;        /* Soft cream background */
+  --ramadan-sand: #f5e6d3;         /* Warm sand */
+  
+  /* Semantic Colors */
+  --primary: var(--ramadan-teal);
+  --primary-dark: #0a5d61;
+  --secondary: var(--ramadan-gold);
+  --accent: var(--ramadan-mint);
+  
+  /* Status Colors */
+  --success: #27ae60;
+  --success-light: #52c27b;
+  --warning: #f39c12;
+  --danger: #e74c3c;
+  
+  /* Neutral Colors */
+  --background: var(--ramadan-cream);
+  --surface: #ffffff;
+  --text: #2c3e50;
+  --text-secondary: #5d6d7e;
+  --border: #e8dacc;
+  
+  /* Gradients */
+  --gradient-ramadan: linear-gradient(135deg, #1a1446 0%, #2d1b69 50%, #0d7377 100%);
+  --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4e4c1 100%);
+  --gradient-peaceful: linear-gradient(135deg, #0d7377 0%, #14ffec 100%);
+  --gradient-night: linear-gradient(180deg, #1a1446 0%, #0d1b2a 100%);
+  
+  /* Shadows */
+  --shadow-soft: 0 2px 8px rgba(26, 20, 70, 0.08);
+  --shadow-medium: 0 4px 16px rgba(26, 20, 70, 0.12);
+  --shadow-large: 0 8px 32px rgba(26, 20, 70, 0.16);
+  --shadow-glow: 0 0 20px rgba(212, 175, 55, 0.3);
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+}
+
+/* Dark Mode - Evening Prayer Theme */
+.dark {
+  --background: var(--ramadan-night);
+  --surface: var(--ramadan-dusk);
+  --text: var(--ramadan-moon);
+  --text-secondary: #b8a891;
+  --border: #3d2b6d;
+}
+
+/* ==========================================
+   GLOBAL STYLES
+   ========================================== */
 * {
   margin: 0;
   padding: 0;
@@ -5,259 +88,1734 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background: #f5f5f5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--background);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
 }
 
+/* Subtle Islamic Pattern Background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(13, 115, 119, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==========================================
+   APP CONTAINER
+   ========================================== */
 .App {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
 }
 
+/* ==========================================
+   HEADER - NIGHT SKY WITH STARS
+   ========================================== */
 header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-ramadan);
   color: white;
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: var(--spacing-xl) var(--spacing-lg);
+  box-shadow: var(--shadow-large);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated Stars Background */
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(2px 2px at 90% 60%, white, transparent),
+    radial-gradient(1px 1px at 33% 80%, white, transparent);
+  background-size: 200% 200%;
+  animation: twinkle 8s ease-in-out infinite;
+  opacity: 0.6;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* Crescent Moon Decoration */
+header::after {
+  content: '☾';
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  font-size: 60px;
+  color: var(--ramadan-gold);
+  opacity: 0.3;
+  animation: moonGlow 4s ease-in-out infinite;
+}
+
+@keyframes moonGlow {
+  0%, 100% { 
+    opacity: 0.3; 
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+  }
+  50% { 
+    opacity: 0.5; 
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+  }
 }
 
 header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+header h1::before {
+  content: '✨ ';
+}
+
+header h1::after {
+  content: ' ✨';
 }
 
 header p {
-  font-size: 1.2rem;
+  font-size: 16px;
   opacity: 0.9;
+  position: relative;
+  z-index: 1;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ==========================================
+   HEADER CONTROLS
+   ========================================== */
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+  align-items: center;
+  margin-top: var(--spacing-lg);
+  position: relative;
+  z-index: 1;
 }
 
 .mode-toggle {
   display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1.5rem;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
 }
 
 .mode-btn {
-  padding: 0.8rem 2rem;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   color: white;
-  border: 2px solid white;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
   font-weight: 600;
-  transition: all 0.3s;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.mode-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: var(--ramadan-gold);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
 }
 
 .mode-btn:hover {
-  background: rgba(255,255,255,0.3);
+  border-color: var(--ramadan-gold);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
 }
 
 .mode-btn.active {
-  background: white;
-  color: #667eea;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  background: var(--gradient-gold);
+  border-color: var(--ramadan-gold);
+  color: var(--ramadan-night);
+  box-shadow: var(--shadow-glow);
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+.dark-mode-toggle,
+.daily-word-trigger {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 10px 16px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
 }
 
+.dark-mode-toggle:hover,
+.daily-word-trigger:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================
+   STATS CARDS - GOLDEN ACCENTS
+   ========================================== */
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: var(--spacing-lg);
+  margin: var(--spacing-xl) 0;
 }
 
 .stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
+  background: var(--surface);
+  border: 2px solid var(--ramadan-gold);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-medium);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '✦';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  color: var(--ramadan-gold);
+  opacity: 0.2;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-large), var(--shadow-glow);
+  border-color: var(--ramadan-teal);
 }
 
 .stat-card h3 {
-  font-size: 2.5rem;
-  color: #667eea;
-  margin-bottom: 0.5rem;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--ramadan-teal);
+  margin-bottom: var(--spacing-sm);
+  text-shadow: 0 2px 4px rgba(13, 115, 119, 0.1);
 }
 
 .stat-card p {
-  color: #666;
-  font-size: 1rem;
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
 }
 
+/* ==========================================
+   CONTAINER
+   ========================================== */
+.container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  flex: 1;
+}
+
+/* ==========================================
+   SEARCH & FILTERS
+   ========================================== */
 .search-section {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .search-input {
   width: 100%;
-  padding: 1rem 1.5rem;
-  font-size: 1.1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 50px;
-  background: white;
-  transition: all 0.3s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  background: var(--surface);
+  color: var(--text);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-soft);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  border-color: var(--ramadan-teal);
+  box-shadow: 0 0 0 4px rgba(13, 115, 119, 0.1), var(--shadow-medium);
+  transform: translateY(-2px);
 }
 
+.search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+/* ==========================================
+   CATEGORY FILTERS - GOLDEN PILLS
+   ========================================== */
 .filters-section {
-  margin-bottom: 2rem;
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: var(--spacing-xl);
 }
 
 .filters-section h3 {
-  margin-bottom: 1rem;
-  color: #333;
-  font-size: 1.1rem;
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
 }
 
 .category-filters {
   display: flex;
-  gap: 0.5rem;
   flex-wrap: wrap;
+  gap: var(--spacing-sm);
 }
 
 .filter-btn {
-  padding: 0.6rem 1.2rem;
-  border: 2px solid #e0e0e0;
-  background: white;
-  border-radius: 25px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--text);
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 0.95rem;
-  transition: all 0.3s;
-  color: #666;
-  font-weight: 500;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-gold);
+  transition: left 0.3s ease;
+  z-index: 0;
 }
 
 .filter-btn:hover {
-  border-color: #667eea;
-  background: #f0f4ff;
+  border-color: var(--ramadan-gold);
   transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
 }
 
 .filter-btn.active {
-  background: #667eea;
-  color: white;
-  border-color: #667eea;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  background: var(--gradient-gold);
+  border-color: var(--ramadan-gold);
+  color: var(--ramadan-night);
+  box-shadow: var(--shadow-glow);
 }
 
+.filter-btn.active::before {
+  left: 0;
+}
+
+/* ==========================================
+   WORDS GRID - PEACEFUL CARDS
+   ========================================== */
 .words-section h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: #333;
+  font-size: 24px;
+  color: var(--text);
+  margin-bottom: var(--spacing-lg);
+  font-weight: 700;
 }
 
 .words-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-lg);
+  animation: fadeInUp 0.6s ease;
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================
+   WORD CARDS - ELEGANT DESIGN
+   ========================================== */
+.word-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-soft);
+  transition: all var(--transition-slow);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Islamic Star Corner Decoration */
+.word-card::before {
+  content: '✦';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 16px;
+  color: var(--ramadan-gold);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.word-card:hover::before {
+  opacity: 0.4;
+}
+
+.word-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-peaceful);
+  transform: scaleX(0);
+  transition: transform var(--transition-base);
+}
+
+.word-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-large);
+  border-color: var(--ramadan-teal);
+}
+
+.word-card:hover::after {
+  transform: scaleX(1);
+}
+
+/* Arabic Text - Beautiful Typography */
+.word-card h3 {
+  font-family: 'Amiri', 'Traditional Arabic', serif;
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+  color: var(--ramadan-teal);
+  line-height: 1.8;
+  text-shadow: 0 1px 2px rgba(13, 115, 119, 0.1);
+}
+
+.word-card .transliteration {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-align: center;
+  font-style: italic;
+  margin-bottom: var(--spacing-xs);
+}
+
+.word-card .meaning {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text);
+  margin-bottom: var(--spacing-md);
+}
+
+.word-card .details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  margin-top: var(--spacing-md);
+}
+
+.word-card .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background: var(--ramadan-sand);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.word-card .root-badge {
+  background: var(--gradient-gold);
+  color: var(--ramadan-night);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.word-card .root-badge:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-glow);
+}
+
+.word-card .category-badge {
+  background: var(--gradient-peaceful);
+  color: white;
+}
+
+/* ==========================================
+   NO RESULTS - PEACEFUL EMPTY STATE
+   ========================================== */
 .no-results {
   text-align: center;
-  padding: 4rem 2rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: var(--spacing-2xl);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
 }
 
 .no-results h3 {
-  font-size: 2rem;
-  color: #666;
-  margin-bottom: 1rem;
+  font-size: 24px;
+  color: var(--text);
+  margin-bottom: var(--spacing-md);
 }
 
 .no-results p {
-  font-size: 1.1rem;
-  color: #999;
-  margin-bottom: 1.5rem;
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
 }
 
 .reset-btn {
-  padding: 0.75rem 2rem;
-  background: #667eea;
+  background: var(--gradient-peaceful);
   color: white;
   border: none;
-  border-radius: 25px;
-  font-size: 1rem;
+  padding: 12px 32px;
+  border-radius: var(--radius-full);
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-medium);
 }
 
 .reset-btn:hover {
-  background: #5568d3;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: var(--shadow-large);
 }
 
+/* ==========================================
+   FLASHCARD MODE
+   ========================================== */
 .flashcard-stats {
   display: flex;
-  gap: 1rem;
+  gap: var(--spacing-md);
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .stat-card-small {
-  background: white;
-  padding: 1rem 2rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: var(--surface);
+  border: 2px solid var(--ramadan-gold);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
+  box-shadow: var(--shadow-soft);
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 14px;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 
 .stat-value {
-  font-size: 1.3rem;
-  color: #667eea;
+  font-size: 18px;
+  color: var(--ramadan-teal);
   font-weight: 700;
 }
 
+/* ==========================================
+   BUTTONS - GOLDEN & TEAL
+   ========================================== */
+button {
+  font-family: inherit;
+  transition: all var(--transition-base);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* ==========================================
+   DARK MODE ADJUSTMENTS
+   ========================================== */
+.dark .word-card {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.dark .word-card:hover {
+  border-color: var(--ramadan-mint);
+  box-shadow: 0 8px 32px rgba(20, 255, 236, 0.2);
+}
+
+.dark .stat-card {
+  background: var(--surface);
+  border-color: var(--ramadan-mint);
+}
+
+.dark header::after {
+  color: var(--ramadan-moon);
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
 @media (max-width: 768px) {
   header h1 {
-    font-size: 2rem;
+    font-size: 24px;
   }
-  
+
+  header::after {
+    font-size: 40px;
+    top: 10px;
+    right: 20px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
   .words-grid {
     grid-template-columns: 1fr;
   }
-  
-  .filter-btn {
-    font-size: 0.85rem;
-    padding: 0.5rem 1rem;
-  }
-  
+
   .mode-toggle {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .mode-btn {
     width: 100%;
   }
+
+  .mode-btn {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .stat-card h3 {
+    font-size: 36px;
+  }
+
+  .word-card h3 {
+    font-size: 28px;
+  }
 }
+
+/* ==========================================
+   ANIMATIONS & SPECIAL EFFECTS
+   ========================================== */
+
+/* Peaceful fade-in for page load */
+@keyframes peacefulFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container > * {
+  animation: peacefulFadeIn 0.6s ease;
+}
+
+/* Ramadan blessing text glow */
+.blessing-text {
+  color: var(--ramadan-gold);
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  font-weight: 600;
+}
+
+/* ==========================================
+   ACCESSIBILITY
+   ========================================== */
+*:focus-visible {
+  outline: 3px solid var(--ramadan-mint);
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   PRINT STYLES
+   ========================================== */
+@media print {
+  header,
+  .header-controls,
+  .search-section,
+  .filters-section,
+  button {
+    display: none;
+  }
+
+  .word-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  body::before {
+    display: none;
+  }
+}
+
+/* ==========================================
+   RAMADAN MUBARAK! 🌙✨
+   May your learning journey be blessed!
+   ========================================== */
+
+   /* ==========================================
+   IMPROVED UX - CLEAN LAYOUT
+   ========================================== */
+
+/* ==========================================
+   IMPROVED UX - CLEAN LAYOUT
+   ========================================== */
+
+/* Clean Header */
+.app-header-clean {
+  background: linear-gradient(135deg, #1a1446 0%, #0d7377 100%);
+  color: white;
+  padding: 16px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content-clean {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-title-clean {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.menu-toggle {
+  display: none; /* Show on mobile only */
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Tab-Style Mode Switcher */
+.mode-tabs {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 3px solid #e9ecef;
+  position: sticky;
+  top: 57px; /* Below header */
+  z-index: 99;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tab {
+  flex: 1;
+  padding: 16px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  color: #6c757d;
+}
+
+.tab-icon {
+  font-size: 24px;
+  transition: transform 0.3s;
+}
+
+.tab-label {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tab:hover {
+  background: rgba(13, 115, 119, 0.05);
+  color: #0d7377;
+}
+
+.tab:hover .tab-icon {
+  transform: scale(1.1);
+}
+
+.tab.active {
+  color: #0d7377;
+  background: white;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #0d7377, #14ffec);
+}
+
+/* Sticky Stats Bar */
+.stats-bar {
+  position: sticky;
+  top: 121px; /* Below header + tabs */
+  z-index: 98;
+  background: white;
+  border-bottom: 1px solid #e9ecef;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  gap: 16px;
+}
+
+.dark .stats-bar {
+  background: var(--ramadan-dusk);
+  border-bottom-color: var(--border);
+}
+
+.stat-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 70px;
+}
+
+.stat-compact.streak {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.stat-number {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0d7377;
+  line-height: 1;
+}
+
+.stat-compact.streak .stat-number {
+  color: white;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.stat-compact.streak .stat-label {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Floating Action Buttons */
+.floating-actions {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 1000;
+}
+
+.fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab-primary {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  color: white;
+}
+
+.fab-secondary {
+  background: linear-gradient(135deg, #d4af37, #f4e4c1);
+  color: #1a1446;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+/* Mobile Menu */
+.mobile-menu-overlay {
+  display: none; /* Only show on mobile when menu is open */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  animation: fadeIn 0.3s;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  background: white;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  animation: slideInRight 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dark .mobile-menu {
+  background: var(--ramadan-dusk);
+}
+
+.mobile-menu h3 {
+  font-size: 20px;
+  margin: 0 0 16px 0;
+  color: #1a1446;
+}
+
+.dark .mobile-menu h3 {
+  color: var(--ramadan-moon);
+}
+
+.mobile-menu button {
+  padding: 16px;
+  border: 2px solid #e9ecef;
+  background: white;
+  border-radius: 12px;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dark .mobile-menu button {
+  background: var(--ramadan-night);
+  border-color: var(--border);
+  color: var(--ramadan-moon);
+}
+
+.mobile-menu button:hover {
+  border-color: #0d7377;
+  background: rgba(13, 115, 119, 0.05);
+  transform: translateX(4px);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Container Adjustments */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .app-title-clean {
+    font-size: 18px;
+  }
+
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mode-tabs {
+    top: 56px;
+  }
+
+  .tab {
+    padding: 12px 8px;
+  }
+
+  .tab-icon {
+    font-size: 20px;
+  }
+
+  .tab-label {
+    font-size: 11px;
+  }
+
+  .stats-bar {
+    top: 112px;
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .stat-compact {
+    min-width: auto;
+    flex: 1;
+  }
+
+  .stat-number {
+    font-size: 16px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+  }
+
+  .floating-actions {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .fab {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .mobile-menu-overlay {
+    display: block;
+  }
+
+  .container {
+    padding: 16px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .tab-label {
+    font-size: 12px;
+  }
+
+  .stat-number {
+    font-size: 18px;
+  }
+}
+
+/* Keep existing styles for components */
+.search-section,
+.filters-section,
+.words-section,
+.words-grid,
+.word-card,
+.no-results,
+.root-explorer-banner,
+.category-filters,
+.filter-btn,
+.reset-btn {
+  /* Your existing styles remain */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Print friendly */
+@media print {
+  .app-header-clean,
+  .mode-tabs,
+  .stats-bar,
+  .floating-actions,
+  .mobile-menu-overlay {
+    display: none;
+  }
+}
+
+/* ==========================================
+   QUICK WINS - UX IMPROVEMENTS
+   Add these to the END of your App.css
+   ========================================== */
+
+/* ==========================================
+   QUICK WIN 1: BETTER WORD CARD HOVER EFFECTS
+   ========================================== */
+
+.word-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient overlay on hover */
+.word-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(13, 115, 119, 0.05) 0%, rgba(20, 255, 236, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.word-card:hover::before {
+  opacity: 1;
+}
+
+/* Lift effect */
+.word-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 
+    0 20px 40px rgba(13, 115, 119, 0.2),
+    0 0 0 1px rgba(13, 115, 119, 0.1);
+}
+
+/* Glow effect on known words */
+.word-card.known {
+  border-color: #27ae60;
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.05) 0%, rgba(46, 204, 113, 0.05) 100%);
+}
+
+.word-card.known::after {
+  content: '✓';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+}
+
+/* Shimmer effect on card */
+.word-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.word-card:hover::after {
+  transform: translateX(100%);
+}
+
+/* ==========================================
+   QUICK WIN 2: CATEGORY COLOR CODING
+   ========================================== */
+
+/* Category-specific colors */
+.word-card[data-category="Divine Names"] {
+  border-left: 4px solid #d4af37;
+}
+
+.word-card[data-category="Divine Names"]:hover {
+  box-shadow: 0 20px 40px rgba(212, 175, 55, 0.3);
+}
+
+.word-card[data-category="Worship"] {
+  border-left: 4px solid #0d7377;
+}
+
+.word-card[data-category="Worship"]:hover {
+  box-shadow: 0 20px 40px rgba(13, 115, 119, 0.3);
+}
+
+.word-card[data-category="Faith"] {
+  border-left: 4px solid #8e44ad;
+}
+
+.word-card[data-category="Faith"]:hover {
+  box-shadow: 0 20px 40px rgba(142, 68, 173, 0.3);
+}
+
+.word-card[data-category="Moral Qualities"] {
+  border-left: 4px solid #27ae60;
+}
+
+.word-card[data-category="Moral Qualities"]:hover {
+  box-shadow: 0 20px 40px rgba(39, 174, 96, 0.3);
+}
+
+.word-card[data-category="Prophets"] {
+  border-left: 4px solid #e67e22;
+}
+
+.word-card[data-category="Prophets"]:hover {
+  box-shadow: 0 20px 40px rgba(230, 126, 34, 0.3);
+}
+
+.word-card[data-category="Common Verbs"] {
+  border-left: 4px solid #3498db;
+}
+
+.word-card[data-category="Common Verbs"]:hover {
+  box-shadow: 0 20px 40px rgba(52, 152, 219, 0.3);
+}
+
+.word-card[data-category="Time & Place"] {
+  border-left: 4px solid #e74c3c;
+}
+
+.word-card[data-category="Time & Place"]:hover {
+  box-shadow: 0 20px 40px rgba(231, 76, 60, 0.3);
+}
+
+/* Category badge color coding */
+.category-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.category-badge[data-category="Divine Names"] {
+  background: linear-gradient(135deg, #d4af37, #f4e4c1);
+  color: #1a1446;
+}
+
+.category-badge[data-category="Worship"] {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  color: white;
+}
+
+.category-badge[data-category="Faith"] {
+  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  color: white;
+}
+
+.category-badge[data-category="Moral Qualities"] {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+}
+
+.category-badge[data-category="Prophets"] {
+  background: linear-gradient(135deg, #e67e22, #f39c12);
+  color: white;
+}
+
+.category-badge[data-category="Common Verbs"] {
+  background: linear-gradient(135deg, #3498db, #5dade2);
+  color: white;
+}
+
+.category-badge[data-category="Time & Place"] {
+  background: linear-gradient(135deg, #e74c3c, #ec7063);
+  color: white;
+}
+
+/* ==========================================
+   QUICK WIN 3: SMOOTH PAGE TRANSITIONS
+   ========================================== */
+
+/* Fade in animation for all content */
+.container > * {
+  animation: smoothFadeIn 0.5s ease-out;
+}
+
+@keyframes smoothFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger animation for word cards */
+.words-grid .word-card {
+  animation: cardSlideIn 0.5s ease-out backwards;
+}
+
+.words-grid .word-card:nth-child(1) { animation-delay: 0.05s; }
+.words-grid .word-card:nth-child(2) { animation-delay: 0.1s; }
+.words-grid .word-card:nth-child(3) { animation-delay: 0.15s; }
+.words-grid .word-card:nth-child(4) { animation-delay: 0.2s; }
+.words-grid .word-card:nth-child(5) { animation-delay: 0.25s; }
+.words-grid .word-card:nth-child(6) { animation-delay: 0.3s; }
+.words-grid .word-card:nth-child(7) { animation-delay: 0.35s; }
+.words-grid .word-card:nth-child(8) { animation-delay: 0.4s; }
+.words-grid .word-card:nth-child(9) { animation-delay: 0.45s; }
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mode transition */
+.container {
+  animation: modeSwitch 0.4s ease-out;
+}
+
+@keyframes modeSwitch {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Smooth button transitions */
+button,
+.filter-btn,
+.tab {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:active,
+.filter-btn:active,
+.tab:active {
+  transform: scale(0.96);
+}
+
+/* ==========================================
+   QUICK WIN 4: LOADING ANIMATIONS
+   ========================================== */
+
+/* Loading skeleton for word cards */
+.word-card-skeleton {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 16px;
+  height: 200px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #0d7377;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Loading dots */
+.loading-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.loading-dots span {
+  width: 12px;
+  height: 12px;
+  background: #0d7377;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* Progress bar animation */
+.progress-bar-animated {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-animated::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: progressShimmer 2s infinite;
+}
+
+@keyframes progressShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ==========================================
+   QUICK WIN 5: BEAUTIFUL EMPTY STATES
+   ========================================== */
+
+.no-results {
+  text-align: center;
+  padding: 80px 40px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  animation: emptyStateFadeIn 0.5s ease-out;
+}
+
+@keyframes emptyStateFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Empty state icon */
+.no-results::before {
+  content: '📚';
+  display: block;
+  font-size: 80px;
+  margin-bottom: 24px;
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.no-results h3 {
+  font-size: 28px;
+  color: #2c3e50;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.no-results p {
+  font-size: 16px;
+  color: #6c757d;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.reset-btn {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(13, 115, 119, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.reset-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.reset-btn:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(13, 115, 119, 0.4);
+}
+
+.reset-btn:active {
+  transform: translateY(0);
+}
+
+/* Different empty states for different scenarios */
+.no-results.no-search-results::before {
+  content: '🔍';
+}
+
+.no-results.no-known-words::before {
+  content: '🎯';
+}
+
+.no-results.no-category-words::before {
+  content: '📂';
+}
+
+/* Success animation when marking word as known */
+@keyframes successPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.word-card.just-learned {
+  animation: successPulse 0.5s ease-out;
+}
+
+/* Confetti effect on milestones */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* ==========================================
+   BONUS: MICRO-INTERACTIONS
+   ========================================== */
+
+/* Ripple effect on buttons */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+  width: 200px;
+  height: 200px;
+}
+
+/* Tooltip on hover */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  padding: 8px 12px;
+  background: #1a1446;
+  color: white;
+  font-size: 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+}
+
+[data-tooltip]:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 3px solid #14ffec;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.fab-learning {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.fab-learning:hover {
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+}
+
+.fab-clusters {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.fab-clusters:hover {
+  box-shadow: 0 4px 20px rgba(240, 147, 251, 0.4);
+}
+
+/* ==========================================
+   END OF QUICK WINS
+   ========================================== */
