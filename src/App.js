@@ -13,8 +13,10 @@ import LearningDashboard from './components/InteractiveLearningDashboard';
 import LandingPage from './components/LandingPage';
 import MultiSensoryLearning from './components/MultiSensoryLearning';
 import ThemedClusters from './components/ThemedClusters';
-
-
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import './components/Auth.css';
 import {
   secureStorage,
   isValidWordId,
@@ -24,9 +26,16 @@ import {
   createRateLimiter,
   safeExecute
 } from './utils/SecurityUtils';
+import {
+  saveKnownWord,
+  getKnownWords,
+  updateUserProgress,
+  getUserProgress
+} from './utils/supabaseClient';
 
-function App() {
+function AppContent() {
   const isPremium = usePremiumStatus();
+  const { user, signOut } = useAuth();
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -37,29 +46,26 @@ function App() {
   const [selectedWord, setSelectedWord] = useState(null);
   const [selectedWordIndex, setSelectedWordIndex] = useState(0);
   const [showMultiSensory, setShowMultiSensory] = useState(false);
-const [multiSensoryWord, setMultiSensoryWord] = useState(null);
-const [showThemedClusters, setShowThemedClusters] = useState(false);
-const [activeCluster, setActiveCluster] = useState(null);
-  
+  const [multiSensoryWord, setMultiSensoryWord] = useState(null);
+  const [showThemedClusters, setShowThemedClusters] = useState(false);
+  const [activeCluster, setActiveCluster] = useState(null);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
   const [showLanding, setShowLanding] = useState(() => {
     const hasVisited = secureStorage.get('hasVisited', false, (val) => typeof val === 'boolean');
     return !hasVisited;
   });
-  
   const [showDailyWord, setShowDailyWord] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
   const [showWordContext, setShowWordContext] = useState(false);
   const [showPricing, setShowPricing] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  
   const [knownWords, setKnownWords] = useState(() => {
     return secureStorage.get('knownWords', [], isValidWordIdArray);
   });
-  
   const [darkMode, setDarkMode] = useState(() => {
     return secureStorage.get('darkMode', false, (val) => typeof val === 'boolean');
   });
-  
   const [streak, setStreak] = useState(() => {
     return secureStorage.get('learningStreak', 0, isValidStreak);
   });
@@ -68,8 +74,48 @@ const [activeCluster, setActiveCluster] = useState(null);
   const storageRateLimiter = createRateLimiter(1000);
   const categories = ['All', ...new Set(validatedWords.map(w => w.category))];
 
-  const handleMarkAsKnown = useCallback((wordId) => {
-    safeExecute(() => {
+  // ✅ NEW: Sync data when user logs in
+  useEffect(() => {
+    const syncUserData = async () => {
+      if (user) {
+        console.log('👤 User logged in, syncing data from cloud...');
+        
+        try {
+          // Load known words from Supabase
+          const { words, error: wordsError } = await getKnownWords(user.id);
+          
+          if (!wordsError && words) {
+            const cloudWordIds = words.map(w => w.word_id);
+            const localWords = secureStorage.get('knownWords', [], isValidWordIdArray);
+            
+            // Merge and deduplicate
+            const mergedWords = [...new Set([...cloudWordIds, ...localWords])];
+            
+            setKnownWords(mergedWords);
+            secureStorage.set('knownWords', mergedWords, isValidWordIdArray);
+            
+            console.log('✅ Synced', mergedWords.length, 'known words from cloud');
+          }
+          
+          // Load user progress
+          const { progress, error: progressError } = await getUserProgress(user.id);
+          if (!progressError && progress) {
+            setStreak(progress.learning_streak || 0);
+            secureStorage.set('learningStreak', progress.learning_streak || 0, isValidStreak);
+            console.log('✅ Synced learning streak:', progress.learning_streak);
+          }
+        } catch (error) {
+          console.error('Error syncing user data:', error);
+        }
+      }
+    };
+    
+    syncUserData();
+  }, [user]);
+
+  // ✅ UPDATED: Save to cloud when marking word as known
+  const handleMarkAsKnown = useCallback(async (wordId) => {
+    await safeExecute(async () => {
       if (!isValidWordId(wordId)) return;
       const wordExists = validatedWords.find(w => w.id === wordId);
       if (!wordExists) return;
@@ -79,9 +125,20 @@ const [activeCluster, setActiveCluster] = useState(null);
       const updated = [...knownWords, wordId];
       setKnownWords(updated);
       secureStorage.set('knownWords', updated, isValidWordIdArray);
+      
+      // Save to Supabase if user is logged in
+      if (user) {
+        const { word, error } = await saveKnownWord(user.id, wordId);
+        if (!error) {
+          console.log('✅ Saved to cloud:', wordId);
+        } else {
+          console.error('❌ Failed to save to cloud:', error);
+        }
+      }
+      
       updateStreak();
     });
-  }, [knownWords, validatedWords, storageRateLimiter]);
+  }, [knownWords, validatedWords, storageRateLimiter, user]);
 
   const toggleDarkMode = useCallback(() => {
     safeExecute(() => {
@@ -113,21 +170,19 @@ const [activeCluster, setActiveCluster] = useState(null);
     secureStorage.set('hasVisited', true);
   };
 
- const handleOpenMultiSensory = (word) => {
-  setMultiSensoryWord(word);
-  setShowMultiSensory(true);
-};
+  const handleOpenMultiSensory = (word) => {
+    setMultiSensoryWord(word);
+    setShowMultiSensory(true);
+  };
 
-const handleOpenThemedClusters = () => {
-  setShowThemedClusters(true);
-};
+  const handleOpenThemedClusters = () => {
+    setShowThemedClusters(true);
+  };
 
-const handleSelectCluster = (clusterWords, theme) => {
-  setActiveCluster({ words: clusterWords, theme });
-  // Optionally filter to show only cluster words
-  // or navigate to a special cluster view
-  alert(`Starting ${theme.title} with ${clusterWords.length} words!`);
-};
+  const handleSelectCluster = (clusterWords, theme) => {
+    setActiveCluster({ words: clusterWords, theme });
+    alert(`Starting ${theme.title} with ${clusterWords.length} words!`);
+  };
  
   const handleSelectPlan = (plan, billingCycle) => {
     if (plan === 'premium') {
@@ -138,8 +193,9 @@ const handleSelectCluster = (clusterWords, theme) => {
     setShowPricing(false);
   };
 
-  const updateStreak = useCallback(() => {
-    safeExecute(() => {
+  // ✅ UPDATED: Sync streak to cloud
+  const updateStreak = useCallback(async () => {
+    await safeExecute(async () => {
       const today = new Date().toDateString();
       const lastStudy = secureStorage.get('lastStudyDate', null, (val) => typeof val === 'string');
       
@@ -159,10 +215,34 @@ const handleSelectCluster = (clusterWords, theme) => {
           if (newStreak > bestStreak) {
             secureStorage.set('bestStreak', newStreak, isValidStreak);
           }
+          
+          // Sync to Supabase if user is logged in
+          if (user) {
+            const { progress, error } = await updateUserProgress(user.id, {
+              learning_streak: newStreak,
+              best_streak: Math.max(newStreak, bestStreak),
+              last_study_date: today,
+              total_words_learned: knownWords.length + 1
+            });
+            
+            if (!error) {
+              console.log('✅ Synced streak to cloud:', newStreak);
+            } else {
+              console.error('❌ Failed to sync streak:', error);
+            }
+          }
         }
       }
     });
-  }, [streak]);
+  }, [streak, user, knownWords]);
+
+  // ✅ NEW: Sign out handler
+  const handleSignOut = async () => {
+    await signOut();
+    console.log('👋 User signed out');
+    // Optionally reload to reset state
+    // window.location.reload();
+  };
 
   const handleNext = () => {
     if (currentCardIndex < filteredWords.length - 1) {
@@ -248,6 +328,50 @@ const handleSelectCluster = (clusterWords, theme) => {
           <header className="app-header-clean">
             <div className="header-content-clean">
               <h1 className="app-title-clean">🕌 Quran Vocabulary</h1>
+              
+              {/* ✅ UPDATED: Shows user email and sign out when logged in */}
+              <div className="header-auth" style={{ display: 'flex', gap: '12px', alignItems: 'center', position: 'relative', zIndex: 100, pointerEvents: 'auto' }}>
+                {user ? (
+                  <>
+                    <span className="user-email" style={{ fontSize: '14px', fontWeight: 600 }}>
+                      👤 {user.email}
+                    </span>
+                    <button 
+                      className="auth-trigger-btn"
+                      style={{ cursor: 'pointer', pointerEvents: 'auto' }}
+                      onClick={handleSignOut}
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button 
+                      className="auth-trigger-btn"
+                      style={{ cursor: 'pointer', pointerEvents: 'auto', position: 'relative', zIndex: 101 }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowLogin(true);
+                      }}
+                    >
+                      Sign In
+                    </button>
+                    <button 
+                      className="auth-trigger-btn primary"
+                      style={{ cursor: 'pointer', pointerEvents: 'auto', position: 'relative', zIndex: 101 }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setShowSignup(true);
+                      }}
+                    >
+                      Sign Up
+                    </button>
+                  </>
+                )}
+              </div>
+              
               <button className="menu-toggle" onClick={() => setShowMenu(!showMenu)}>
                 {showMenu ? '✕' : '☰'}
               </button>
@@ -255,30 +379,30 @@ const handleSelectCluster = (clusterWords, theme) => {
           </header>
 
           <nav className="mode-tabs">
-            <button 
-              className={mode === 'browse' ? 'tab active' : 'tab'}
-              onClick={() => handleModeSwitch('browse')}
-            >
+            <button
+             className={mode === 'browse' ? 'tab active' : 'tab'}
+             onClick={() => handleModeSwitch('browse')}
+             >
               <span className="tab-icon">📚</span>
               <span className="tab-label">Browse</span>
             </button>
             <button 
-              className={mode === 'flashcard' ? 'tab active' : 'tab'}
-              onClick={() => handleModeSwitch('flashcard')}
+            className={mode === 'flashcard' ? 'tab active' : 'tab'} 
+            onClick={() => handleModeSwitch('flashcard')}
             >
               <span className="tab-icon">🎴</span>
               <span className="tab-label">Flashcard</span>
             </button>
             <button 
-              className={mode === 'quiz' ? 'tab active' : 'tab'}
-              onClick={() => handleModeSwitch('quiz')}
+            className={mode === 'quiz' ? 'tab active' : 'tab'} 
+            onClick={() => handleModeSwitch('quiz')}
             >
               <span className="tab-icon">🎯</span>
               <span className="tab-label">Quiz</span>
             </button>
             <button 
-              className={mode === 'review' ? 'tab active' : 'tab'}
-              onClick={() => handleModeSwitch('review')}
+            className={mode === 'review' ? 'tab active' : 'tab'}
+            onClick={() => handleModeSwitch('review')}
             >
               <span className="tab-icon">🧠</span>
               <span className="tab-label">Review</span>
@@ -341,9 +465,7 @@ const handleSelectCluster = (clusterWords, theme) => {
                       <h3>🌳 Root Explorer: {selectedRoot}</h3>
                       <p>{filteredWords.length} words share this root</p>
                     </div>
-                    <button className="close-root-btn" onClick={closeRootExplorer}>
-                      ✕ Close
-                    </button>
+                    <button className="close-root-btn" onClick={closeRootExplorer}>✕ Close</button>
                   </div>
                 )}
 
@@ -370,16 +492,11 @@ const handleSelectCluster = (clusterWords, theme) => {
                     <div className="no-results">
                       <h3>😕 No words found</h3>
                       <p>Try a different search term or category</p>
-                      <button 
-                        className="reset-btn"
-                        onClick={() => {
-                          setSearchTerm('');
-                          setSelectedCategory('All');
-                          closeRootExplorer();
-                        }}
-                      >
-                        Reset Filters
-                      </button>
+                      <button className="reset-btn" onClick={() => {
+                        setSearchTerm('');
+                        setSelectedCategory('All');
+                        closeRootExplorer();
+                      }}>Reset Filters</button>
                     </div>
                   )}
                 </section>
@@ -427,31 +544,15 @@ const handleSelectCluster = (clusterWords, theme) => {
           
           <div className="floating-actions">
             <button 
-              className="fab fab-primary" 
-              onClick={() => setShowDashboard(true)}
-              title="View Dashboard"
+            className="fab fab-primary"
+            onClick={() => setShowDashboard(true)} 
+            title="View Dashboard"
             >
               📊
             </button>
-            <button 
-              className="fab fab-secondary" 
-              onClick={toggleDarkMode}
-              title="Toggle Dark Mode"
-            >
-              {darkMode ? '☀️' : '🌙'}
-            </button>
-            <button 
-              className="fab fab-secondary" 
-              onClick={() => setShowDailyWord(true)}
-              title="Daily Word"
-            >
-              📅
-            </button>
-            <button 
-              className={`fab ${isPremium ? 'fab-premium' : 'fab-upgrade'}`}
-              onClick={() => setShowPricing(true)}
-              title={isPremium ? 'Premium Active' : 'Upgrade to Premium'}
-            >
+            <button className="fab fab-secondary" onClick={toggleDarkMode} title="Toggle Dark Mode">{darkMode ? '☀️' : '🌙'}</button>
+            <button className="fab fab-secondary" onClick={() => setShowDailyWord(true)} title="Daily Word">📅</button>
+            <button className={`fab ${isPremium ? 'fab-premium' : 'fab-upgrade'}`} onClick={() => setShowPricing(true)} title={isPremium ? 'Premium Active' : 'Upgrade to Premium'}>
               {isPremium ? '⭐' : '⬆️'}
             </button>
           </div>
@@ -462,21 +563,23 @@ const handleSelectCluster = (clusterWords, theme) => {
                 <h3>Menu</h3>
                 <button onClick={() => { setShowDashboard(true); setShowMenu(false); }}>
                   📊 Dashboard
-                </button>
-                <button onClick={() => { toggleDarkMode(); setShowMenu(false); }}>
-                  {darkMode ? '☀️' : '🌙'} {darkMode ? 'Light' : 'Dark'} Mode
-                </button>
-                <button onClick={() => { setShowDailyWord(true); setShowMenu(false); }}>
-                  📅 Daily Word
-                </button>
-                <button onClick={() => { setShowPricing(true); setShowMenu(false); }}>
-                  {isPremium ? '⭐ Premium' : '⬆️ Upgrade'}
-                </button>
+                  </button>
+                <button onClick={() => { toggleDarkMode(); setShowMenu(false); }}>{darkMode ? '☀️' : '🌙'} {darkMode ? 'Light' : 'Dark'} Mode</button>
+                <button onClick={() => { setShowDailyWord(true); setShowMenu(false); }}>📅 Daily Word</button>
+                <button onClick={() => { setShowPricing(true); setShowMenu(false); }}>{isPremium ? '⭐ Premium' : '⬆️ Upgrade'}</button>
+                {user ? (
+                  <button onClick={() => { handleSignOut(); setShowMenu(false); }}>👋 Sign Out</button>
+                ) : (
+                  <>
+                    <button onClick={() => { setShowLogin(true); setShowMenu(false); }}>🔐 Sign In</button>
+                    <button onClick={() => { setShowSignup(true); setShowMenu(false); }}>📝 Sign Up</button>
+                  </>
+                )}
               </div>
             </div>
           )}
       
-          {showDailyWord && (
+ {showDailyWord && (
             <DailyWord
               words={validatedWords}
               onLearn={handleMarkAsKnown}
@@ -525,12 +628,22 @@ const handleSelectCluster = (clusterWords, theme) => {
               onSelectCluster={handleSelectCluster}
               onClose={() => setShowThemedClusters(false)}
               isPremium={isPremium}
-       />
+                />
           )}
 
+          {showLogin && <Login onClose={() => setShowLogin(false)} onSwitchToSignup={() => { setShowLogin(false); setShowSignup(true); }} onSwitchToReset={() => setShowLogin(false)} />}
+          {showSignup && <Signup onClose={() => setShowSignup(false)} onSwitchToLogin={() => { setShowSignup(false); setShowLogin(true); }} />}
         </>
       )}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

@@ -1817,5 +1817,115 @@ html {
 }
 
 /* ==========================================
+   🔐 AUTH BUTTONS CSS
+   Add this to the END of your App.css file
+   ========================================== */
+
+/* Header Auth Section */
+.header-auth {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Auth Trigger Buttons */
+.auth-trigger-btn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid #0d7377;
+  background: transparent;
+  color: white;
+}
+
+.auth-trigger-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.auth-trigger-btn.primary {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  border-color: transparent;
+}
+
+.auth-trigger-btn.primary:hover {
+  box-shadow: 0 4px 15px rgba(13, 115, 119, 0.4);
+}
+
+/* User Email Display */
+.user-email {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .header-auth {
+    display: flex; /* Hide on mobile, show in menu instead */
+  }
+}
+
+/* ==========================================
+   🔧 FIX: Show auth buttons on all screens
+   ========================================== */
+
+.header-auth {
+  display: flex !important;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Mobile: Keep them visible */
+@media (max-width: 768px) {
+  .header-auth {
+    display: flex !important;  /* ✅ Force show on mobile */
+  }
+  
+  .auth-trigger-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+/* ==========================================
+   🔧 FIX: Ensure auth buttons are clickable
+   ========================================== */
+
+.header-auth {
+  position: relative;
+  z-index: 100 !important;
+  pointer-events: auto !important;
+}
+
+.auth-trigger-btn {
+  position: relative;
+  z-index: 101 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Make sure nothing blocks the header */
+.app-header-clean {
+  position: relative;
+  z-index: 100 !important;
+}
+
+.header-content-clean {
+  position: relative;
+  z-index: 100 !important;
+}
+
+
+
+
+/* ==========================================
    END OF QUICK WINS
    ========================================== */

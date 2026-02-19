@@ -65,7 +65,7 @@ const WordContextPremium = ({ word, onClose, isPremium, onUpgrade, wordIndex = 0
                 setTimeout(() => setPlayingAudio(false), 3000);
               }}
             >
-              {playingAudio ? '⏸️' : '🔊'} Listen
+              {playingAudio ? '⏸️' : '🔊'} 
             </button>
           )}
 
@@ -94,13 +94,7 @@ const WordContextPremium = ({ word, onClose, isPremium, onUpgrade, wordIndex = 0
           <button
             className={`tab-btn-premium ${activeTab === 'verses' ? 'active' : ''}`}
             onClick={() => setActiveTab('verses')}
-          >
-            📖 Quranic Verses
-            {isFeatureLocked && <span className="lock-badge">🔒</span>}
-          </button>
-          <button
-            className={`tab-btn-premium ${activeTab === 'grammar' ? 'active' : ''}`}
-            onClick={() => setActiveTab('grammar')}
+
           >
             📝 Grammar & Morphology
             {isFeatureLocked && <span className="lock-badge">🔒</span>}
@@ -119,128 +113,12 @@ const WordContextPremium = ({ word, onClose, isPremium, onUpgrade, wordIndex = 0
             📊 Quranic Usage
             {isFeatureLocked && <span className="lock-badge">🔒</span>}
           </button>
-          <button
-            className={`tab-btn-premium ${activeTab === 'insights' ? 'active' : ''}`}
-            onClick={() => setActiveTab('insights')}
-          >
-            💡 Scholar Insights
-            {isFeatureLocked && <span className="lock-badge">🔒</span>}
-          </button>
         </div>
 
         {/* Content Area */}
         <div className="context-content-premium">
 
-          {/* VERSES TAB */}
-          {activeTab === 'verses' && (
-            <div className="verses-section-premium">
-              {isFeatureLocked ? (
-                <div className="premium-lock-premium">
-                  <div className="lock-icon-premium">🔒</div>
-                  <h3>Premium Feature</h3>
-                  <p>Words 501-1000 require Premium. Upgrade to unlock!</p>
-                  <ul className="premium-benefits-premium">
-                    <li>✓ Access 500 additional Quranic words</li>
-                    <li>✓ Real verses, grammar & etymology for all words</li>
-                    <li>✓ Advanced analytics dashboard</li>
-                    <li>✓ Certificate generator</li>
-                    <li>✓ Cloud sync & backup</li>
-                    <li>✓ Premium themes</li>
-                  </ul>
-                  <button className="upgrade-btn-premium" onClick={onUpgrade}>
-                    ⭐ Upgrade to Premium
-                  </button>
-                </div>
-              ) : loadingVerses ? (
-                <div className="loading-verses">
-                  <div className="loading-spinner"></div>
-                  <p>Loading verses from the Quran...</p>
-                </div>
-              ) : verseData.length > 0 ? (
-                <>
-                  <h3 className="section-title-premium">
-                    📖 "{word.arabic}" in the Quran
-                  </h3>
-                  <p className="section-intro-premium">
-                    This word appears <strong>{word.occurrences}</strong> times in the Quran
-                  </p>
-                  {verseData.map((verse, idx) => (
-                    <div key={idx} className="verse-card-premium">
-                      <div className="verse-header-premium">
-                        <span className="verse-ref-premium">
-                          Surah {verse.surah}:{verse.ayah}
-                          {verse.surahName && ` - ${verse.surahName}`}
-                        </span>
-                        {verse.juz && (
-                          <span className="verse-juz-premium">Juz {verse.juz}</span>
-                        )}
-                      </div>
-                      <div className="verse-arabic-premium">{verse.arabic}</div>
-                      {verse.transliteration && (
-                        <div className="verse-transliteration-premium">
-                          {verse.transliteration}
-                        </div>
-                      )}
-                      <div className="verse-translation-premium">
-                        "{verse.translation}"
-                      </div>
-                      {verse.context && (
-                        <div className="verse-context-premium">
-                          <span className="context-icon-premium">💡</span>
-                          <p>{verse.context}</p>
-                        </div>
-                      )}
-                      <div className="verse-actions-premium">
-                        <button
-                          className="verse-action-btn-premium"
-                          onClick={() => {
-                            const audio = playVerseAudio(verse.surah, verse.ayah);
-                            setPlayingAudio(true);
-                            if (audio) audio.onended = () => setPlayingAudio(false);
-                          }}
-                        >
-                          🔊 Listen
-                        </button>
-                        <button
-                          className="verse-action-btn-premium"
-                          onClick={() => {
-                            navigator.clipboard.writeText(
-                              `${verse.arabic}\n\n${verse.translation}\n\nSurah ${verse.surah}:${verse.ayah}`
-                            );
-                            alert('Verse copied!');
-                          }}
-                        >
-                          📋 Copy
-                        </button>
-                        <button className="verse-action-btn-premium">
-                          📖 Full Surah
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </>
-              ) : (
-                <div className="no-verses-yet">
-                  <h3 className="section-title-premium">
-                    📖 "{word.arabic}" — {word.meaning}
-                  </h3>
-                  <div className="coming-soon-message">
-                    <p className="coming-soon-icon">🔍</p>
-                    <p className="coming-soon-text">
-                      Quranic verses for this word are being added soon.
-                    </p>
-                    <p className="help-text">
-                      This word appears <strong>{word.occurrences}</strong> times in the Quran.
-                    </p>
-                    <div className="word-details-simple">
-                      <div className="detail-simple"><strong>Root:</strong> {word.root}</div>
-                      <div className="detail-simple"><strong>Category:</strong> {word.category}</div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+          
 
           {/* GRAMMAR TAB */}
           {activeTab === 'grammar' && (
