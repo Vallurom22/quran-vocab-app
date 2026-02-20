@@ -35,6 +35,7 @@ const QuizEnhanced = ({ words, onComplete, isPremium = false }) => {
     } else if (timeLeft === 0 && !showFeedback) {
       handleSubmit();
     }
+    // eslint-disable-next-line
   }, [timeLeft, showFeedback]);
 
   // Generate options for multiple choice

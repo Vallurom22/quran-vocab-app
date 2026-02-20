@@ -51,7 +51,7 @@ export const sanitizeFilename = (filename) => {
   // Remove path traversal attempts and dangerous characters
   const clean = filename
     .replace(/\.\./g, '')
-    .replace(/[\/\\]/g, '')
+    .replace(/[/\\]/g, '')
     .replace(/[^a-zA-Z0-9_-]/g, '');
   
   // Must have some content
@@ -431,6 +431,7 @@ export const SECURITY_CONSTANTS = {
 // 10. EXPORT ALL
 // ============================================
 
+// eslint-disable-next-line
 export default {
   sanitizeText,
   sanitizeArabicText,
