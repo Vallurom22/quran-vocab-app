@@ -1,14 +1,42 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './LandingPage.css';
 
 const LandingPage = ({ onStart, totalWords, knownWords }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const isProcessingRef = useRef(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     setIsVisible(true);
+    
+    // Ensure video plays on mobile
+    if (videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.log('Video autoplay failed:', error);
+      });
+    }
   }, []);
 
   const progressPercentage = Math.round((knownWords / totalWords) * 100);
+
+  const handleStart = (e) => {
+    if (isProcessingRef.current) {
+      return;
+    }
+    
+    isProcessingRef.current = true;
+    
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    onStart();
+    
+    setTimeout(() => {
+      isProcessingRef.current = false;
+    }, 1000);
+  };
 
   return (
     <div className={`landing-page ${isVisible ? 'visible' : ''}`}>
@@ -26,8 +54,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
           <span className="crescent">☾</span>
         </div>
       </div>
-
-      {/* Hero Section */}
+      {/* Rest of your content (unchanged) */}
       <div className="landing-hero">
         <div className="hero-content">
           {/* Animated Logo */}
@@ -41,17 +68,36 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
           {/* Title with Animation */}
           <h1 className="hero-title">
             <span className="title-line-1">Quran Vocabulary</span>
-            <span className="title-line-2">Master 500 Essential Arabic Words</span>
+            <span className="title-line-2">Learn Arabic Through the Words of Allah</span>
           </h1>
 
           {/* Subtitle */}
           <p className="hero-subtitle">
-            Learn Arabic through the beauty of the Quran
-            <br />
-            <span className="subtitle-highlight">✨ Free • Interactive • Engaging ✨</span>
+            <span style={{ 
+              fontSize: '20px', 
+              fontWeight: 600, 
+              display: 'block', 
+              marginBottom: '12px',
+              color: '#14ffec'
+            }}>
+              إِنَّا أَنزَلْنَاهُ قُرْآنًا عَرَبِيًّا لَّعَلَّكُمْ تَعْقِلُونَ
+            </span>
+            <span style={{ 
+              fontSize: '15px', 
+              display: 'block', 
+              marginBottom: '16px',
+              opacity: 0.9,
+              fontStyle: 'italic'
+            }}>
+              "Indeed, We have sent it down as an Arabic Qur'an that you might understand."
+            </span>
+            <span style={{ fontSize: '13px', opacity: 0.7 }}>— Surah Yusuf (12:2)</span>
+            <br /><br />
+            <span className="subtitle-highlight">
+              ✨ Master 500 essential Quranic words • Free Forever ✨
+            </span>
           </p>
 
-          {/* Progress Preview (if user has started) */}
           {knownWords > 0 && (
             <div className="hero-progress-preview">
               <div className="progress-preview-card">
@@ -78,9 +124,18 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
             </div>
           )}
 
-          {/* CTA Button */}
-          <button className="hero-cta" onClick={onStart}>
-            <span className="cta-text">{knownWords > 0 ? 'Continue Learning' : 'Start Learning'}</span>
+          <button 
+            className="hero-cta" 
+            onClick={handleStart}
+            onTouchEnd={(e) => e.preventDefault()}
+            style={{
+              touchAction: 'manipulation',
+              userSelect: 'none',
+              WebkitTouchCallout: 'none',
+              WebkitTapHighlightColor: 'transparent'
+            }}
+          >
+            <span className="cta-text">{knownWords > 0 ? 'Continue Learning' : 'Start Learning Free'}</span>
             <span className="cta-icon">→</span>
           </button>
 
@@ -89,17 +144,17 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
             <div className="stat-item">
               <div className="stat-icon">📚</div>
               <div className="stat-number">500</div>
-              <div className="stat-label">Words</div>
+              <div className="stat-label">Free Words</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-icon">⭐</div>
+              <div className="stat-number">+1500 words</div>
+              <div className="stat-label">Premium Version Coming Soon</div>
             </div>
             <div className="stat-item">
               <div className="stat-icon">🎯</div>
               <div className="stat-number">4</div>
-              <div className="stat-label">Modes</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-icon">⚡</div>
-              <div className="stat-number">Free</div>
-              <div className="stat-label">Forever</div>
+              <div className="stat-label">Study Modes</div>
             </div>
           </div>
         </div>
@@ -108,7 +163,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
       {/* Features Section */}
       <div className="landing-features">
         <div className="features-container">
-          <h2 className="features-title">Why Learn With Us?</h2>
+          <h2 className="features-title">Why Learn Quranic Arabic With Us?</h2>
           
           <div className="features-grid">
             {/* Feature 1 */}
@@ -116,9 +171,9 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
               <div className="feature-icon-wrapper">
                 <div className="feature-icon">📖</div>
               </div>
-              <h3 className="feature-title">Quranic Context</h3>
+              <h3 className="feature-title">Understand the Quran Directly</h3>
               <p className="feature-description">
-                Every word comes with examples from the Quran, showing real usage and meaning
+                Learn the actual words used in the Quran. Understand Allah's message in its original language without translation
               </p>
             </div>
 
@@ -127,53 +182,53 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
               <div className="feature-icon-wrapper">
                 <div className="feature-icon">🎴</div>
               </div>
-              <h3 className="feature-title">Interactive Flashcards</h3>
+              <h3 className="feature-title">Interactive Learning</h3>
               <p className="feature-description">
-                Engaging flashcard system helps you memorize words faster and retain them longer
+                Flashcards, quizzes, and spaced repetition help you memorize and retain words naturally
               </p>
             </div>
 
             {/* Feature 3 */}
             <div className="feature-card">
               <div className="feature-icon-wrapper">
-                <div className="feature-icon">🎯</div>
+                <div className="feature-icon">🌳</div>
               </div>
-              <h3 className="feature-title">Quiz Yourself</h3>
+              <h3 className="feature-title">Root Word System</h3>
               <p className="feature-description">
-                Test your knowledge with fun quizzes and track your progress over time
+                Discover how Arabic words connect through trilateral roots - understand one root, unlock dozens of words
               </p>
             </div>
 
             {/* Feature 4 */}
             <div className="feature-card">
               <div className="feature-icon-wrapper">
-                <div className="feature-icon">🌳</div>
+                <div className="feature-icon">💯</div>
               </div>
-              <h3 className="feature-title">Root Explorer</h3>
+              <h3 className="feature-title">100% Free Core Features</h3>
               <p className="feature-description">
-                Discover word families and understand the beautiful structure of Arabic
+                500 essential words, flashcards, quizzes, and progress tracking - completely free forever
               </p>
             </div>
 
             {/* Feature 5 */}
             <div className="feature-card">
               <div className="feature-icon-wrapper">
-                <div className="feature-icon">📊</div>
+                <div className="feature-icon">⭐</div>
               </div>
-              <h3 className="feature-title">Track Progress</h3>
+              <h3 className="feature-title">Premium Coming Soon</h3>
               <p className="feature-description">
-                Beautiful dashboard shows your learning journey with stats and achievements
+                500+ advanced words, grammar lessons, pronunciation guides, and more - stay tuned!
               </p>
             </div>
 
             {/* Feature 6 */}
             <div className="feature-card">
               <div className="feature-icon-wrapper">
-                <div className="feature-icon">🌙</div>
+                <div className="feature-icon">📊</div>
               </div>
-              <h3 className="feature-title">Beautiful Design</h3>
+              <h3 className="feature-title">Track Your Progress</h3>
               <p className="feature-description">
-                Ramadan-themed interface with peaceful colors and smooth animations
+                Beautiful analytics show your journey from beginner to understanding the Quran in Arabic
               </p>
             </div>
           </div>
@@ -183,38 +238,38 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
       {/* How It Works Section */}
       <div className="landing-how-it-works">
         <div className="how-it-works-container">
-          <h2 className="how-it-works-title">How It Works</h2>
+          <h2 className="how-it-works-title">Your Journey to Understanding the Quran</h2>
           
           <div className="steps-timeline">
             <div className="step">
               <div className="step-number">1</div>
               <div className="step-content">
-                <h3>Browse Words</h3>
-                <p>Explore 500 carefully selected Quranic words organized by category</p>
+                <h3>Start with Essential Words</h3>
+                <p>Begin with the 500 most frequent words in the Quran - these cover over 70% of the text you'll encounter</p>
               </div>
             </div>
 
             <div className="step">
               <div className="step-number">2</div>
               <div className="step-content">
-                <h3>Study & Learn</h3>
-                <p>Use flashcards, see examples, and explore root word families</p>
+                <h3>Learn Through Context</h3>
+                <p>See each word in actual Quranic verses. Understand how Allah uses these words to convey His message</p>
               </div>
             </div>
 
             <div className="step">
               <div className="step-number">3</div>
               <div className="step-content">
-                <h3>Test Yourself</h3>
-                <p>Take quizzes and review words to reinforce your learning</p>
+                <h3>Practice & Memorize</h3>
+                <p>Use flashcards and quizzes designed to help you retain vocabulary long-term, not just for a test</p>
               </div>
             </div>
 
             <div className="step">
               <div className="step-number">4</div>
               <div className="step-content">
-                <h3>Track Progress</h3>
-                <p>Watch your vocabulary grow and celebrate milestones</p>
+                <h3>Experience Understanding</h3>
+                <p>Feel the joy of recognizing words during Salah and understanding verses without translation</p>
               </div>
             </div>
           </div>
@@ -224,19 +279,38 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
       {/* Final CTA */}
       <div className="landing-final-cta">
         <div className="final-cta-content">
-          <h2 className="final-cta-title">Ready to Begin Your Journey?</h2>
+          <h2 className="final-cta-title">Begin Understanding Allah's Words Today</h2>
           <p className="final-cta-subtitle">
-            Join thousands learning Quranic Arabic
+            Join thousands of Muslims worldwide learning to read and understand the Quran in Arabic
+            <br />
+            <strong style={{ color: '#14ffec', marginTop: '8px', display: 'block' }}>
+              Free Forever • No Credit Card • Start Immediately
+            </strong>
           </p>
-          <button className="final-cta-button" onClick={onStart}>
-            <span>Start Learning Now</span>
+          <button 
+            className="final-cta-button" 
+            onClick={handleStart}
+            onTouchEnd={(e) => e.preventDefault()}
+            style={{
+              touchAction: 'manipulation',
+              userSelect: 'none'
+            }}
+          >
+            <span>Start Learning Free</span>
             <span className="button-arrow">→</span>
           </button>
         </div>
       </div>
 
-      {/* Skip Button */}
-      <button className="skip-landing" onClick={onStart}>
+      <button 
+        className="skip-landing" 
+        onClick={handleStart}
+        onTouchEnd={(e) => e.preventDefault()}
+        style={{
+          touchAction: 'manipulation',
+          userSelect: 'none'
+        }}
+      >
         Skip Introduction →
       </button>
     </div>
