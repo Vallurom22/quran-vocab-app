@@ -13,6 +13,8 @@ import React, { useState, useEffect } from 'react';
 import './WordContextPremium.css';
 import { getVerses, playVerseAudio } from '../utils/QuranAPI';
 import { getRootMeaning } from '../utils/RootMeaningsDatabase';
+import VerseContext from './VerseContext';
+import RelatedWords from './RelatedWords';
 
 const WordContextSimplified = ({ 
   word, 

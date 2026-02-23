@@ -94,7 +94,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
             <span style={{ fontSize: '13px', opacity: 0.7 }}>— Surah Yusuf (12:2)</span>
             <br /><br />
             <span className="subtitle-highlight">
-              ✨ Master 500 essential Quranic words • Free Forever ✨
+              ✨ Learn Arabic and understand the Quran more deeply by growing your vocabulary in a simple, effective way.✨
             </span>
           </p>
 
@@ -163,7 +163,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
       {/* Features Section */}
       <div className="landing-features">
         <div className="features-container">
-          <h2 className="features-title">Why Learn Quranic Arabic With Us?</h2>
+          <h2 className="features-title">“What if learning Arabic could finally feel simple, meaningful, and built around real vocabulary growth?”</h2>
           
           <div className="features-grid">
             {/* Feature 1 */}
@@ -206,7 +206,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
               </div>
               <h3 className="feature-title">100% Free Core Features</h3>
               <p className="feature-description">
-                500 essential words, flashcards, quizzes, and progress tracking - completely free forever
+                1000+ essential words, flashcards, quizzes, and progress tracking - completely free forever
               </p>
             </div>
 
@@ -217,7 +217,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
               </div>
               <h3 className="feature-title">Premium Coming Soon</h3>
               <p className="feature-description">
-                500+ advanced words, grammar lessons, pronunciation guides, and more - stay tuned!
+                1000+ advanced words, grammar lessons, pronunciation guides, and more - stay tuned!
               </p>
             </div>
 
@@ -245,7 +245,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
               <div className="step-number">1</div>
               <div className="step-content">
                 <h3>Start with Essential Words</h3>
-                <p>Begin with the 500 most frequent words in the Quran - these cover over 70% of the text you'll encounter</p>
+                <p>Begin with the 1000+ most frequent words in the Quran - these cover over 70% of the text you'll encounter</p>
               </div>
             </div>
 
@@ -284,7 +284,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
             Join thousands of Muslims worldwide learning to read and understand the Quran in Arabic
             <br />
             <strong style={{ color: '#14ffec', marginTop: '8px', display: 'block' }}>
-              Free Forever • No Credit Card • Start Immediately
+              Get Started Free • No Commitment • Learn Right Away
             </strong>
           </p>
           <button 
@@ -296,7 +296,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
               userSelect: 'none'
             }}
           >
-            <span>Start Learning Free</span>
+            <span>Start Learning Today</span>
             <span className="button-arrow">→</span>
           </button>
         </div>

@@ -17,6 +17,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import './components/Auth.css';
+import InstallPrompt from './components/InstallPrompt';
 import {
   secureStorage,
   isValidWordId,

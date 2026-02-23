@@ -8,9 +8,10 @@ import { quranWords } from './words';
 
 // Import premium words (99 Names + essential categories)
 import premiumWords from './PremiumWords_500';
+import words501to1000 from './Words501to1000';
 
 // Combine all words
-const allWords = [...quranWords, ...premiumWords];
+const allWords = [...quranWords, ...premiumWords, ...words501to1000];
 
 /**
  * Premium word enhancement data with REAL Quran verses

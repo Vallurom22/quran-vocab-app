@@ -1,0 +1,325 @@
+/* ==========================================
+   🔗 RELATED WORDS CSS
+   ========================================== */
+
+.related-words-container {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+}
+
+/* Header */
+.related-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.related-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1446;
+  margin-bottom: 8px;
+}
+
+.related-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Filter Tabs */
+.related-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.related-tab {
+  flex: 1;
+  min-width: 120px;
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.related-tab:hover {
+  border-color: #0d7377;
+  transform: translateY(-2px);
+}
+
+.related-tab.active {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  border-color: #0d7377;
+  color: white;
+  box-shadow: 0 4px 12px rgba(13, 115, 119, 0.3);
+}
+
+.tab-icon {
+  font-size: 20px;
+}
+
+.tab-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tab-count {
+  font-size: 11px;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.related-tab.active .tab-count {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Words Grid */
+.related-words-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Word Card */
+.related-word-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.related-word-card:hover {
+  border-color: #0d7377;
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(13, 115, 119, 0.15);
+}
+
+.related-word-card.known {
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+  border-color: #81c784;
+  opacity: 0.8;
+}
+
+.related-word-card.known:hover {
+  opacity: 1;
+}
+
+/* Known Badge */
+.known-badge-small {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #66bb6a, #4caf50);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Priority Badge */
+.priority-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #ffd93d, #f39c12);
+  padding: 4px 8px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 8px rgba(255, 217, 61, 0.4);
+}
+
+.priority-icon {
+  font-size: 12px;
+}
+
+.priority-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: #1a1446;
+  text-transform: uppercase;
+}
+
+/* Word Content */
+.related-arabic {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1446;
+  text-align: center;
+  direction: rtl;
+  margin-top: 8px;
+}
+
+.related-english {
+  font-size: 15px;
+  font-weight: 600;
+  color: #0d7377;
+  text-align: center;
+}
+
+.related-trans {
+  font-size: 12px;
+  color: #6c757d;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Meta Info */
+.related-meta {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e9ecef;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #6c757d;
+}
+
+.meta-icon {
+  font-size: 14px;
+}
+
+/* Learn Button */
+.learn-this-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: auto;
+}
+
+.learn-this-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 115, 119, 0.3);
+}
+
+.related-word-card.known .learn-this-btn {
+  background: linear-gradient(135deg, #81c784, #66bb6a);
+}
+
+/* Learning Tip */
+.related-tip {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(244, 208, 63, 0.1));
+  border-left: 4px solid #d4af37;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.tip-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.6;
+}
+
+/* Empty State */
+.related-words-empty {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.related-words-empty p:last-child {
+  font-size: 16px;
+  color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .related-words-container {
+    padding: 16px;
+  }
+
+  .related-words-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .related-tabs {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .related-tab {
+    flex-shrink: 0;
+  }
+
+  .related-arabic {
+    font-size: 24px;
+  }
+}
+
+/* Animation */
+.related-word-card {
+  animation: fadeInScale 0.4s ease-out;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Stagger animation */
+.related-word-card:nth-child(1) { animation-delay: 0.05s; }
+.related-word-card:nth-child(2) { animation-delay: 0.1s; }
+.related-word-card:nth-child(3) { animation-delay: 0.15s; }
+.related-word-card:nth-child(4) { animation-delay: 0.2s; }
+.related-word-card:nth-child(5) { animation-delay: 0.25s; }
+.related-word-card:nth-child(6) { animation-delay: 0.3s; }
+.related-word-card:nth-child(7) { animation-delay: 0.35s; }
+.related-word-card:nth-child(8) { animation-delay: 0.4s; }
