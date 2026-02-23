@@ -1,21 +1,36 @@
+/**
+ * 📚 SIMPLIFIED WORD CONTEXT MODAL
+ * 
+ * Changes:
+ * ✅ Simplified tabs (3 instead of 5)
+ * ✅ "Learning" tab combines grammar, etymology, roots
+ * ✅ "Verses" tab for Quranic examples
+ * ✅ "Usage" tab for usage info
+ * ✅ Cleaner, more focused information
+ */
+
 import React, { useState, useEffect } from 'react';
 import './WordContextPremium.css';
 import { getVerses, playVerseAudio } from '../utils/QuranAPI';
+import { getRootMeaning } from '../utils/RootMeaningsDatabase';
 
-const WordContextPremium = ({ word, onClose, isPremium, onUpgrade, wordIndex = 0, onOpenMultiSensory }) => {
-  const [activeTab, setActiveTab] = useState('verses');
+const WordContextSimplified = ({ 
+  word, 
+  onClose, 
+  isPremium, 
+  onUpgrade, 
+  wordIndex = 0, 
+  onOpenMultiSensory 
+}) => {
+  const [activeTab, setActiveTab] = useState('learning');
   const [playingAudio, setPlayingAudio] = useState(false);
   const [verseData, setVerseData] = useState([]);
   const [loadingVerses, setLoadingVerses] = useState(false);
 
   const premiumData = word.premium || {};
-
-  // ✅ CORRECT LOCK LOGIC:
-  // Words 0-499 (first 500): FREE - never locked
-  // Words 500+: Need premium
   const isFeatureLocked = wordIndex >= 500 && !isPremium;
 
-  // Fetch real verses when component mounts
+  // Fetch verses
   useEffect(() => {
     async function fetchVerses() {
       if (!isFeatureLocked && premiumData.verses && premiumData.verses.length > 0) {
@@ -38,175 +53,182 @@ const WordContextPremium = ({ word, onClose, isPremium, onUpgrade, wordIndex = 0
     fetchVerses();
   }, [isFeatureLocked, word, premiumData]);
 
+  // Play audio
+  const handlePlayAudio = () => {
+    if ('speechSynthesis' in window) {
+      const utterance = new SpeechSynthesisUtterance(word.arabic);
+      utterance.lang = 'ar-SA';
+      utterance.rate = 0.8;
+      speechSynthesis.speak(utterance);
+      setPlayingAudio(true);
+      setTimeout(() => setPlayingAudio(false), 3000);
+    }
+  };
+
   return (
-    <div className="word-context-overlay-premium" onClick={onClose}>
-      <div className="word-context-modal-premium" onClick={(e) => e.stopPropagation()}>
+    <div className="word-context-overlay-simplified" onClick={onClose}>
+      <div className="word-context-modal-simplified" onClick={(e) => e.stopPropagation()}>
 
-        {/* Header */}
-        <div className="context-header-premium">
-          <button className="context-close-premium" onClick={onClose}>✕</button>
+        {/* Close Button */}
+        <button className="close-btn-simplified" onClick={onClose}>✕</button>
 
-          <div className="word-display-premium">
-            <h2 className="arabic-display-premium">{word.arabic}</h2>
-            <p className="transliteration-display-premium">{word.transliteration}</p>
-            <p className="meaning-display-premium">{word.meaning}</p>
-          </div>
+        {/* Header Section */}
+        <div className="modal-header-simplified">
+          
+          {/* Arabic Word */}
+          <div className="word-display-large">{word.arabic}</div>
+          
+          {/* English Meaning */}
+          <div className="word-meaning-large">{word.meaning}</div>
+          
+          {/* Transliteration */}
+          <div className="word-trans-sub">{word.transliteration}</div>
 
-          {/* Audio Button - available to all users */}
-          {!isFeatureLocked && (
-            <button
-              className="audio-btn-premium"
-              onClick={() => {
-                const utterance = new SpeechSynthesisUtterance(word.arabic);
-                utterance.lang = 'ar-SA';
-                utterance.rate = 0.8;
-                speechSynthesis.speak(utterance);
-                setPlayingAudio(true);
-                setTimeout(() => setPlayingAudio(false), 3000);
-              }}
-            >
-              {playingAudio ? '⏸️' : '🔊'} 
-            </button>
-          )}
+          {/* Listen Button */}
+          <button 
+            className="listen-btn-header"
+            onClick={handlePlayAudio}
+            disabled={playingAudio}
+          >
+            {playingAudio ? '🔊 Playing...' : '▶️ Listen'}
+          </button>
 
-          {/* Quick Stats - always visible */}
-          <div className="quick-stats-premium">
-            <div className="stat-premium">
-              <span className="stat-icon-premium">📖</span>
-              <span className="stat-value-premium">{word.occurrences}</span>
-              <span className="stat-label-premium">Occurrences</span>
+          {/* Quick Info Chips */}
+          <div className="quick-info-chips">
+            <div className="info-chip">
+              <span className="chip-icon">🌳</span>
+              <span className="chip-text">{word.root}</span>
             </div>
-            <div className="stat-premium">
-              <span className="stat-icon-premium">🌱</span>
-              <span className="stat-value-premium">{word.root}</span>
-              <span className="stat-label-premium">Root</span>
+            <div className="info-chip">
+              <span className="chip-icon">📁</span>
+              <span className="chip-text">{word.category}</span>
             </div>
-            <div className="stat-premium">
-              <span className="stat-icon-premium">📚</span>
-              <span className="stat-value-premium">{word.category}</span>
-              <span className="stat-label-premium">Category</span>
+            <div className="info-chip">
+              <span className="chip-icon">📖</span>
+              <span className="chip-text">{word.occurrences}x</span>
             </div>
           </div>
         </div>
 
-        {/* ✅ FIXED TABS - only show lock if word is 501+ */}
-        <div className="context-tabs-premium">
+        {/* Simplified Tabs (3 tabs only) */}
+        <div className="tabs-simplified">
           <button
-            className={`tab-btn-premium ${activeTab === 'verses' ? 'active' : ''}`}
+            className={`tab-simplified ${activeTab === 'learning' ? 'active' : ''}`}
+            onClick={() => setActiveTab('learning')}
+          >
+            <span className="tab-icon">📚</span>
+            <span className="tab-label">Learning</span>
+          </button>
+          <button
+            className={`tab-simplified ${activeTab === 'verses' ? 'active' : ''}`}
             onClick={() => setActiveTab('verses')}
-
           >
-            📝 Grammar & Morphology
-            {isFeatureLocked && <span className="lock-badge">🔒</span>}
+            <span className="tab-icon">📖</span>
+            <span className="tab-label">Quranic Verses</span>
           </button>
           <button
-            className={`tab-btn-premium ${activeTab === 'linguistics' ? 'active' : ''}`}
-            onClick={() => setActiveTab('linguistics')}
-          >
-            🔤 Etymology & Roots
-            {isFeatureLocked && <span className="lock-badge">🔒</span>}
-          </button>
-          <button
-            className={`tab-btn-premium ${activeTab === 'usage' ? 'active' : ''}`}
+            className={`tab-simplified ${activeTab === 'usage' ? 'active' : ''}`}
             onClick={() => setActiveTab('usage')}
           >
-            📊 Quranic Usage
-            {isFeatureLocked && <span className="lock-badge">🔒</span>}
+            <span className="tab-icon">💡</span>
+            <span className="tab-label">Usage & Insights</span>
           </button>
         </div>
 
-        {/* Content Area */}
-        <div className="context-content-premium">
+        {/* Tab Content */}
+        <div className="tab-content-simplified">
 
-          
-
-          {/* GRAMMAR TAB */}
-          {activeTab === 'grammar' && (
-            <div className="grammar-section-premium">
-              {isFeatureLocked ? (
-                <div className="premium-lock-premium">
-                  <div className="lock-icon-premium">🔒</div>
-                  <h3>Premium Feature</h3>
-                  <p>Upgrade to Premium to unlock words 501-1000!</p>
-                  <button className="upgrade-btn-premium" onClick={onUpgrade}>
-                    ⭐ Upgrade to Premium
-                  </button>
+          {/* LEARNING TAB - Combines Grammar, Etymology, Roots */}
+          {activeTab === 'learning' && (
+            <div className="learning-content">
+              
+              {/* Root Breakdown */}
+              <div className="learning-section">
+                <h3 className="section-title">🌳 Root & Etymology</h3>
+                <div className="root-display-box">
+                  <div className="root-letters">
+                    {word.root.split('-').map((letter, idx) => (
+                      <div key={idx} className="root-letter-item">
+                        {letter}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="root-meaning-text">
+                    <strong>Core Meaning:</strong> {getRootMeaning(word.root)}
+                  </div>
                 </div>
-              ) : premiumData.grammar ? (
-                <>
-                  <h3 className="section-title-premium">📝 Grammatical Analysis</h3>
-                  <div className="grammar-grid-premium">
-                    <div className="grammar-item-premium">
-                      <label>Word Type:</label>
-                      <span>{premiumData.grammar.type}</span>
+              </div>
+
+              {/* Grammar (if available) */}
+              {premiumData.grammar && (
+                <div className="learning-section">
+                  <h3 className="section-title">📝 Grammar</h3>
+                  <div className="grammar-info-box">
+                    <div className="grammar-item">
+                      <span className="grammar-label">Word Type:</span>
+                      <span className="grammar-value">{premiumData.grammar.type}</span>
                     </div>
                     {premiumData.grammar.pattern && (
-                      <div className="grammar-item-premium">
-                        <label>Form/Pattern:</label>
-                        <span>{premiumData.grammar.pattern}</span>
+                      <div className="grammar-item">
+                        <span className="grammar-label">Pattern:</span>
+                        <span className="grammar-value">{premiumData.grammar.pattern}</span>
+                      </div>
+                    )}
+                    {premiumData.grammar.notes && (
+                      <div className="grammar-notes">
+                        <p>{premiumData.grammar.notes}</p>
                       </div>
                     )}
                   </div>
-                  {premiumData.grammar.notes && (
-                    <div className="grammar-notes-premium">
-                      <h4>📌 Important Notes:</h4>
-                      <p>{premiumData.grammar.notes}</p>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <div className="no-verses-yet">
-                  <h3 className="section-title-premium">📝 Grammar Analysis</h3>
-                  <div className="coming-soon-message">
-                    <p className="coming-soon-icon">📚</p>
-                    <p className="coming-soon-text">
-                      Detailed grammar analysis for this word is being added.
-                    </p>
-                  </div>
                 </div>
               )}
+
+              {/* Learning Tip */}
+              <div className="learning-tip-box">
+                <span className="tip-icon">💡</span>
+                <span className="tip-text">
+                  Understanding the root <strong>{word.root}</strong> helps you learn related words faster!
+                </span>
+              </div>
             </div>
           )}
 
-          {/* LINGUISTICS TAB */}
-          {activeTab === 'linguistics' && (
-            <div className="linguistics-section-premium">
-              {isFeatureLocked ? (
-                <div className="premium-lock-premium">
-                  <div className="lock-icon-premium">🔒</div>
-                  <h3>Premium Feature</h3>
-                  <p>Upgrade to Premium to unlock words 501-1000!</p>
-                  <button className="upgrade-btn-premium" onClick={onUpgrade}>
-                    ⭐ Upgrade to Premium
-                  </button>
+          {/* VERSES TAB */}
+          {activeTab === 'verses' && (
+            <div className="verses-content">
+              {loadingVerses ? (
+                <div className="loading-state">
+                  <div className="spinner"></div>
+                  <p>Loading verses...</p>
                 </div>
-              ) : premiumData.etymology ? (
+              ) : verseData.length > 0 ? (
                 <>
-                  <h3 className="section-title-premium">🔤 Etymology & Word Family</h3>
-                  <div className="root-analysis-premium">
-                    <div className="root-display-premium">
-                      <label>Arabic Root:</label>
-                      <div className="root-letters-premium">
-                        {word.root.split('').map((letter, idx) => (
-                          <span key={idx} className="root-letter-premium">{letter}</span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="root-meaning-premium">
-                      <label>Root Meaning:</label>
-                      <p>{premiumData.etymology.meaning}</p>
-                    </div>
+                  <div className="verses-intro">
+                    <p>This word appears <strong>{word.occurrences}</strong> times in the Quran</p>
                   </div>
+                  {verseData.map((verse, idx) => (
+                    <div key={idx} className="verse-card-simple">
+                      <div className="verse-reference">
+                        Surah {verse.surah}:{verse.ayah}
+                        {verse.surahName && ` - ${verse.surahName}`}
+                      </div>
+                      <div className="verse-arabic-text">{verse.arabic}</div>
+                      <div className="verse-translation-text">"{verse.translation}"</div>
+                      {verse.context && (
+                        <div className="verse-context-note">
+                          💡 {verse.context}
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </>
               ) : (
-                <div className="no-verses-yet">
-                  <h3 className="section-title-premium">🔤 Etymology & Roots</h3>
-                  <div className="coming-soon-message">
-                    <p className="coming-soon-icon">🌳</p>
-                    <p className="coming-soon-text">
-                      Etymology and word family analysis is being added.
-                    </p>
-                  </div>
+                <div className="empty-state">
+                  <p className="empty-icon">📖</p>
+                  <p className="empty-text">Quranic verses coming soon</p>
+                  <p className="empty-subtext">
+                    This word appears {word.occurrences} times in the Quran
+                  </p>
                 </div>
               )}
             </div>
@@ -214,68 +236,38 @@ const WordContextPremium = ({ word, onClose, isPremium, onUpgrade, wordIndex = 0
 
           {/* USAGE TAB */}
           {activeTab === 'usage' && (
-            <div className="usage-section-premium">
-              {isFeatureLocked ? (
-                <div className="premium-lock-premium">
-                  <div className="lock-icon-premium">🔒</div>
-                  <h3>Premium Feature</h3>
-                  <p>Upgrade to Premium to unlock words 501-1000!</p>
-                  <button className="upgrade-btn-premium" onClick={onUpgrade}>
-                    ⭐ Upgrade to Premium
-                  </button>
-                </div>
-              ) : premiumData.quranUsage ? (
-                <>
-                  <h3 className="section-title-premium">📊 Quranic Usage Analysis</h3>
-                  <div className="usage-stats-premium">
-                    <div className="usage-card-premium">
-                      <div className="usage-number-premium">{premiumData.quranUsage.totalOccurrences || word.occurrences}</div>
-                      <div className="usage-label-premium">Total Occurrences</div>
-                    </div>
+            <div className="usage-content">
+              
+              {/* Stats */}
+              <div className="usage-section">
+                <h3 className="section-title">📊 Quranic Statistics</h3>
+                <div className="stats-grid">
+                  <div className="stat-box">
+                    <div className="stat-number">{word.occurrences}</div>
+                    <div className="stat-label">Total Uses</div>
                   </div>
-                </>
-              ) : (
-                <div className="no-verses-yet">
-                  <h3 className="section-title-premium">📊 Quranic Usage</h3>
-                  <div className="coming-soon-message">
-                    <p className="coming-soon-icon">📊</p>
-                    <p className="coming-soon-text">Usage analysis is being added.</p>
+                  <div className="stat-box">
+                    <div className="stat-number">{word.category}</div>
+                    <div className="stat-label">Category</div>
                   </div>
                 </div>
-              )}
-            </div>
-          )}
+              </div>
 
-          {/* INSIGHTS TAB */}
-          {activeTab === 'insights' && (
-            <div className="insights-section-premium">
-              {isFeatureLocked ? (
-                <div className="premium-lock-premium">
-                  <div className="lock-icon-premium">🔒</div>
-                  <h3>Premium Feature</h3>
-                  <p>Upgrade to Premium to unlock words 501-1000!</p>
-                  <button className="upgrade-btn-premium" onClick={onUpgrade}>
-                    ⭐ Upgrade to Premium
-                  </button>
-                </div>
-              ) : premiumData.tafsir ? (
-                <>
-                  <h3 className="section-title-premium">💡 Scholar Insights</h3>
-                  {premiumData.tafsir.brief && (
-                    <div className="tafsir-brief-premium">
-                      <h4>Quick Summary:</h4>
+              {/* Insights (if available) */}
+              {premiumData.tafsir ? (
+                <div className="usage-section">
+                  <h3 className="section-title">💡 Scholar Insights</h3>
+                  <div className="insights-box">
+                    {premiumData.tafsir.brief && (
                       <p>{premiumData.tafsir.brief}</p>
-                    </div>
-                  )}
-                </>
+                    )}
+                  </div>
+                </div>
               ) : (
-                <div className="no-verses-yet">
-                  <h3 className="section-title-premium">💡 Scholar Insights</h3>
-                  <div className="coming-soon-message">
-                    <p className="coming-soon-icon">📜</p>
-                    <p className="coming-soon-text">
-                      Scholar insights and tafsir are being added.
-                    </p>
+                <div className="usage-section">
+                  <div className="insights-placeholder">
+                    <p className="placeholder-icon">📚</p>
+                    <p>Detailed usage insights coming soon</p>
                   </div>
                 </div>
               )}
@@ -284,24 +276,28 @@ const WordContextPremium = ({ word, onClose, isPremium, onUpgrade, wordIndex = 0
 
         </div>
 
-        {/* ✅ FIXED FOOTER */}
-        <div className="context-footer-premium">
-          {onOpenMultiSensory && (
+        {/* Footer - Multi-Sensory Button */}
+        {onOpenMultiSensory && (
+          <div className="modal-footer-simplified">
             <button 
-              className="footer-btn-premium primary"
+              className="multisensory-cta"
               onClick={() => {
                 onOpenMultiSensory(word);
                 onClose();
               }}
             >
-              🎨 Multi-Sensory Learning
+              <span className="cta-icon">🎨</span>
+              <span className="cta-content">
+                <span className="cta-title">Multi-Sensory Learning</span>
+                <span className="cta-subtitle">Interactive visual experience</span>
+              </span>
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
       </div>
     </div>
   );
 };
 
-export default WordContextPremium;
+export default WordContextSimplified;
