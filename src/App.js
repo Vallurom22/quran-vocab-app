@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 // Import learning method components
-import ActiveRecall from './ActiveRecall';
-import MnemonicsStories from './MnemonicsStories';
 import { getWordDatabase } from './data/ExpandedWordDatabase';
-import { usePremiumStatus, simulatePremiumPurchase } from './utils/StripeIntegration';
+import { useSubscription } from './components/StripeIntegration';
 import WordContextPremium from './components/WordContextPremium';
-import PricingPage from './components/PricingPage';
+import PricingPage from './components/PricingPageConnected';
 import WordCard from './components/WordCard';
 import Flashcard from './components/Flashcard';
 import Quiz from './components/Quiz';
@@ -20,7 +18,14 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import './components/Auth.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancelled from './pages/PaymentCancelled';
 import InstallPrompt from './components/InstallPrompt';
+// ✅ Premium UX Components
+import { useUpgradePrompt } from './hooks/useUpgradePrompt';
+import SmartUpgradePrompt from './components/SmartUpgradePrompt';
+import LockedWordCard from './components/LockedWordCard';
 import {
   secureStorage,
   isValidWordId,
@@ -38,8 +43,8 @@ import {
 } from './utils/supabaseClient';
 
 function AppContent() {
-  const isPremium = usePremiumStatus();
   const { user, signOut } = useAuth();
+  const { isPremium, isLoading, source, daysRemaining } = useSubscription(user?.id);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -74,34 +79,40 @@ function AppContent() {
     return secureStorage.get('learningStreak', 0, isValidStreak);
   });
 
+  // ✅ Premium UX System - Smart upgrade prompts
+  const {
+    showPrompt,
+    promptTrigger,
+    setShowPrompt,
+    onLockedFeatureClick,
+    onLockedWordClick,
+    checkWordAccess,
+    checkFeatureAccess
+  } = useUpgradePrompt(isPremium, knownWords.length);
+
   const validatedWords = getWordDatabase(isPremium);
   const storageRateLimiter = createRateLimiter(1000);
   const categories = ['All', ...new Set(validatedWords.map(w => w.category))];
 
-  // ✅ NEW: Sync data when user logs in
+  // Sync data when user logs in
   useEffect(() => {
     const syncUserData = async () => {
       if (user) {
         console.log('👤 User logged in, syncing data from cloud...');
         
         try {
-          // Load known words from Supabase
           const { words, error: wordsError } = await getKnownWords(user.id);
           
           if (!wordsError && words) {
             const cloudWordIds = words.map(w => w.word_id);
             const localWords = secureStorage.get('knownWords', [], isValidWordIdArray);
-            
-            // Merge and deduplicate
             const mergedWords = [...new Set([...cloudWordIds, ...localWords])];
             
             setKnownWords(mergedWords);
             secureStorage.set('knownWords', mergedWords, isValidWordIdArray);
-            
             console.log('✅ Synced', mergedWords.length, 'known words from cloud');
           }
           
-          // Load user progress
           const { progress, error: progressError } = await getUserProgress(user.id);
           if (!progressError && progress) {
             setStreak(progress.learning_streak || 0);
@@ -117,7 +128,6 @@ function AppContent() {
     syncUserData();
   }, [user]);
 
-  // ✅ UPDATED: Save to cloud when marking word as known
   const handleMarkAsKnown = useCallback(async (wordId) => {
     await safeExecute(async () => {
       if (!isValidWordId(wordId)) return;
@@ -130,7 +140,6 @@ function AppContent() {
       setKnownWords(updated);
       secureStorage.set('knownWords', updated, isValidWordIdArray);
       
-      // Save to Supabase if user is logged in
       if (user) {
         const { word, error } = await saveKnownWord(user.id, wordId);
         if (!error) {
@@ -160,27 +169,43 @@ function AppContent() {
     });
   }, []);
 
+  // ✅ Updated: Handle word click with access check
   const handleWordClick = useCallback((word) => {
     safeExecute(() => {
+      // Check if user can access this word
+      if (!checkWordAccess(word.id)) {
+        onLockedWordClick();
+        return;
+      }
+      
       const wordIndex = validatedWords.findIndex(w => w.id === word.id);
       setSelectedWord(word);
       setSelectedWordIndex(wordIndex);
       setShowWordContext(true);
     });
-  }, [validatedWords]);
+  }, [validatedWords, checkWordAccess, onLockedWordClick]);
 
   const handleStartLearning = () => {
     setShowLanding(false);
     secureStorage.set('hasVisited', true);
   };
 
+  // ✅ Updated: Multi-sensory with feature check
   const handleOpenMultiSensory = (word) => {
-    setMultiSensoryWord(word);
-    setShowMultiSensory(true);
+    if (checkFeatureAccess('multi_sensory')) {
+      setMultiSensoryWord(word);
+      setShowMultiSensory(true);
+    } else {
+      onLockedFeatureClick();
+    }
   };
 
   const handleOpenThemedClusters = () => {
-    setShowThemedClusters(true);
+    if (checkFeatureAccess('themed_clusters')) {
+      setShowThemedClusters(true);
+    } else {
+      onLockedFeatureClick();
+    }
   };
 
   const handleSelectCluster = (clusterWords, theme) => {
@@ -188,16 +213,10 @@ function AppContent() {
     alert(`Starting ${theme.title} with ${clusterWords.length} words!`);
   };
  
-  const handleSelectPlan = (plan, billingCycle) => {
-    if (plan === 'premium') {
-      simulatePremiumPurchase(billingCycle);
-      alert('🎉 Premium activated! Refreshing to load premium features...');
-      window.location.reload();
-    }
+  const handleSelectPlan = async (planId) => {
     setShowPricing(false);
   };
 
-  // ✅ UPDATED: Sync streak to cloud
   const updateStreak = useCallback(async () => {
     await safeExecute(async () => {
       const today = new Date().toDateString();
@@ -220,7 +239,6 @@ function AppContent() {
             secureStorage.set('bestStreak', newStreak, isValidStreak);
           }
           
-          // Sync to Supabase if user is logged in
           if (user) {
             const { progress, error } = await updateUserProgress(user.id, {
               learning_streak: newStreak,
@@ -231,8 +249,6 @@ function AppContent() {
             
             if (!error) {
               console.log('✅ Synced streak to cloud:', newStreak);
-            } else {
-              console.error('❌ Failed to sync streak:', error);
             }
           }
         }
@@ -240,12 +256,9 @@ function AppContent() {
     });
   }, [streak, user, knownWords]);
 
-  // ✅ NEW: Sign out handler
   const handleSignOut = async () => {
     await signOut();
     console.log('👋 User signed out');
-    // Optionally reload to reset state
-    // window.location.reload();
   };
 
   const handleNext = () => {
@@ -333,7 +346,6 @@ function AppContent() {
             <div className="header-content-clean">
               <h1 className="app-title-clean">🕌 Quran Vocabulary</h1>
               
-              {/* ✅ UPDATED: Shows user email and sign out when logged in */}
               <div className="header-auth" style={{ display: 'flex', gap: '12px', alignItems: 'center', position: 'relative', zIndex: 100, pointerEvents: 'auto' }}>
                 {user ? (
                   <>
@@ -430,7 +442,7 @@ function AppContent() {
               <div className="stat-compact streak">
                 <span className="stat-number">🔥 {streak}</span>
                 <span className="stat-label">Streak</span>
-              </div>
+            </div>
             )}
           </div>
           
@@ -482,15 +494,30 @@ function AppContent() {
                   
                   {filteredWords.length > 0 ? (
                     <div className="words-grid">
-                      {filteredWords.map(word => (
-                        <WordCard 
-                          key={word.id} 
-                          word={word}
-                          onRootClick={handleRootClick}
-                          onClick={() => handleWordClick(word)}
-                          isKnown={knownWords.includes(word.id)}
-                        />
-                      ))}
+                      {/* ✅ UPDATED: Show locked cards for premium words */}
+                      {filteredWords.map(word => {
+                        const isAccessible = checkWordAccess(word.id);
+                        
+                        if (!isAccessible) {
+                          return (
+                            <LockedWordCard 
+                              key={word.id}
+                              word={word}
+                              onUnlock={onLockedWordClick}
+                            />
+                          );
+                        }
+                        
+                        return (
+                          <WordCard 
+                            key={word.id} 
+                            word={word}
+                            onRootClick={handleRootClick}
+                            onClick={() => handleWordClick(word)}
+                            isKnown={knownWords.includes(word.id)}
+                          />
+                        );
+                      })}
                     </div>
                   ) : (
                     <div className="no-results">
@@ -583,7 +610,7 @@ function AppContent() {
             </div>
           )}
       
- {showDailyWord && (
+          {showDailyWord && (
             <DailyWord
               words={validatedWords}
               onLearn={handleMarkAsKnown}
@@ -618,7 +645,7 @@ function AppContent() {
               currentPlan={isPremium ? 'premium' : 'free'}
             />
           )}
-          {/* ✅ NEW MODALS - ADD THESE */}
+
           {showMultiSensory && multiSensoryWord && (
             <MultiSensoryLearning
               word={multiSensoryWord}
@@ -637,6 +664,14 @@ function AppContent() {
 
           {showLogin && <Login onClose={() => setShowLogin(false)} onSwitchToSignup={() => { setShowLogin(false); setShowSignup(true); }} onSwitchToReset={() => setShowLogin(false)} />}
           {showSignup && <Signup onClose={() => setShowSignup(false)} onSwitchToLogin={() => { setShowSignup(false); setShowLogin(true); }} />}
+          
+          {/* ✅ SMART UPGRADE PROMPT - Shows at right moments */}
+          {showPrompt && (
+            <SmartUpgradePrompt
+              trigger={promptTrigger}
+              onClose={() => setShowPrompt(false)}
+            />
+          )}
         </>
       )}
     </div>
@@ -646,7 +681,13 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <Router>
+        <Routes>
+          <Route path="/" element={<AppContent />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancelled" element={<PaymentCancelled />} />
+        </Routes>
+      </Router>
     </AuthProvider>
   );
 }

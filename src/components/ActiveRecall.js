@@ -1,14 +1,3 @@
-/**
- * 🎯 ACTIVE RECALL COMPONENT
- * 
- * Test yourself without looking at answers
- * Multiple quiz types:
- * - Arabic → English
- * - English → Arabic
- * - Root identification
- * - Category matching
- */
-
 import React, { useState, useEffect } from 'react';
 import './ActiveRecall.css';
 

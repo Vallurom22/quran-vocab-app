@@ -1,0 +1,539 @@
+/* ==========================================
+   💰 PRICING PAGE CSS - STRIPE CONNECTED
+   Modern, professional pricing page styling
+   ========================================== */
+
+/* Overlay */
+.pricing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal */
+.pricing-modal {
+  background: linear-gradient(135deg, #1a1446 0%, #0d1117 100%);
+  border-radius: 24px;
+  max-width: 1200px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Close Button */
+.pricing-modal .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pricing-modal .close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+}
+
+/* Header */
+.pricing-header {
+  text-align: center;
+  padding: 60px 40px 40px;
+  background: linear-gradient(135deg, rgba(13, 115, 119, 0.2), rgba(20, 255, 236, 0.1));
+  border-radius: 24px 24px 0 0;
+}
+
+.pricing-header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.pricing-header p {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 24px;
+}
+
+.pricing-header strong {
+  color: #14ffec;
+  font-weight: 700;
+}
+
+/* Trial Active Banner */
+.trial-active-banner {
+  background: linear-gradient(135deg, #d4af37, #f4d03f);
+  color: #1a1446;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  margin-top: 16px;
+  display: inline-block;
+}
+
+/* Trust Badges */
+.trust-badges {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 40px;
+  flex-wrap: wrap;
+}
+
+.trust-badges span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+}
+
+/* Pricing Cards */
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.pricing-card:hover {
+  border-color: #0d7377;
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(13, 115, 119, 0.3);
+}
+
+.pricing-card.highlighted {
+  border-color: #14ffec;
+  background: linear-gradient(135deg, rgba(13, 115, 119, 0.2), rgba(20, 255, 236, 0.1));
+  box-shadow: 0 8px 24px rgba(20, 255, 236, 0.2);
+}
+
+.pricing-card.highlighted:hover {
+  box-shadow: 0 16px 40px rgba(20, 255, 236, 0.4);
+}
+
+/* Plan Badge */
+.plan-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #d4af37, #f4d03f);
+  color: #1a1446;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+/* Plan Name */
+.pricing-card h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+/* Price */
+.plan-price {
+  margin-bottom: 16px;
+}
+
+.plan-price .price {
+  font-size: 48px;
+  font-weight: 700;
+  color: #14ffec;
+  line-height: 1;
+}
+
+.plan-price .period {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 4px;
+}
+
+/* Savings Text */
+.savings {
+  color: #d4af37;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+
+/* Features List */
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+}
+
+.features li {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  line-height: 1.8;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.features li:last-child {
+  border-bottom: none;
+}
+
+/* CTA Buttons */
+.cta-btn {
+  width: 100%;
+  padding: 16px 32px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cta-btn.primary {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  color: white;
+}
+
+.cta-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(20, 255, 236, 0.4);
+}
+
+.cta-btn.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.cta-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cta-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Comparison Section */
+.comparison-section {
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.comparison-section h3 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 32px;
+}
+
+.comparison-table {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.comparison-table thead {
+  background: rgba(13, 115, 119, 0.3);
+}
+
+.comparison-table th {
+  padding: 16px;
+  text-align: left;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.comparison-table td {
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.comparison-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.comparison-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* FAQ Section */
+.faq-section {
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.faq-section h3 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 32px;
+}
+
+.faq-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.faq-item h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #14ffec;
+  margin-bottom: 12px;
+}
+
+.faq-item p {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Final CTA */
+.final-cta {
+  text-align: center;
+  padding: 60px 40px;
+  background: linear-gradient(135deg, rgba(13, 115, 119, 0.2), rgba(20, 255, 236, 0.1));
+}
+
+.final-cta h3 {
+  font-size: 32px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+}
+
+.final-cta p {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 8px;
+}
+
+.signin-prompt {
+  background: rgba(255, 200, 0, 0.2);
+  border: 2px solid rgba(255, 200, 0, 0.5);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.signin-prompt strong {
+  color: #ffc800;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pricing-modal {
+    border-radius: 20px 20px 0 0;
+    max-height: 95vh;
+  }
+
+  .pricing-header {
+    padding: 40px 20px 20px;
+  }
+
+  .pricing-header h1 {
+    font-size: 28px;
+  }
+
+  .pricing-header p {
+    font-size: 16px;
+  }
+
+  .trust-badges {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pricing-cards {
+    grid-template-columns: 1fr;
+    padding: 20px;
+    gap: 20px;
+  }
+
+  .pricing-card {
+    padding: 24px;
+  }
+
+  .plan-price .price {
+    font-size: 36px;
+  }
+
+  .comparison-section,
+  .faq-section,
+  .final-cta {
+    padding: 30px 20px;
+  }
+
+  .comparison-table {
+    font-size: 14px;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 12px 8px;
+  }
+
+  .faq-item {
+    padding: 20px;
+  }
+
+  .faq-item h4 {
+    font-size: 16px;
+  }
+
+  .final-cta h3 {
+    font-size: 24px;
+  }
+
+  .final-cta p {
+    font-size: 16px;
+  }
+}
+
+/* Smooth Scrolling */
+.pricing-modal {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom Scrollbar */
+.pricing-modal::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pricing-modal::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.pricing-modal::-webkit-scrollbar-thumb {
+  background: rgba(20, 255, 236, 0.3);
+  border-radius: 4px;
+}
+
+.pricing-modal::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 255, 236, 0.5);
+}
+
+/* Loading State */
+.cta-btn:disabled {
+  position: relative;
+}
+
+.cta-btn:disabled::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Touch Optimization for Mobile */
+@media (hover: none) and (pointer: coarse) {
+  .pricing-card,
+  .cta-btn,
+  .close-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  
+  .pricing-card:active {
+    transform: scale(0.98);
+  }
+  
+  .cta-btn:active {
+    transform: scale(0.95);
+  }
+}

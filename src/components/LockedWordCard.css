@@ -1,0 +1,141 @@
+/* ==========================================
+   🔒 LOCKED WORD CARD CSS
+   ========================================== */
+
+.locked-word-card {
+  background: linear-gradient(135deg, rgba(13, 115, 119, 0.1), rgba(20, 255, 236, 0.05));
+  border: 2px dashed rgba(212, 175, 55, 0.5);
+  border-radius: 16px;
+  padding: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locked-word-card:hover {
+  border-color: rgba(212, 175, 55, 0.8);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.2);
+}
+
+/* Blurred Preview */
+.word-preview-blurred {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  filter: blur(8px);
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.arabic-blurred {
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.transliteration-blurred {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.meaning-blurred {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+}
+
+/* Premium Overlay */
+.premium-overlay-card {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.lock-icon-large {
+  font-size: 48px;
+  animation: lockBounce 2s ease-in-out infinite;
+}
+
+@keyframes lockBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.premium-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.premium-text strong {
+  color: #14ffec;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.premium-text span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+}
+
+.unlock-btn-card {
+  background: linear-gradient(135deg, #d4af37, #f4d03f);
+  color: #1a1446;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.unlock-btn-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.4);
+}
+
+/* Premium Badge Corner */
+.premium-badge-corner {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 24px;
+  opacity: 0.5;
+  animation: starTwinkle 2s ease-in-out infinite;
+}
+
+@keyframes starTwinkle {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .locked-word-card {
+    min-height: 180px;
+    padding: 16px;
+  }
+
+  .lock-icon-large {
+    font-size: 40px;
+  }
+
+  .premium-text strong {
+    font-size: 14px;
+  }
+}

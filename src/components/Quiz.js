@@ -123,15 +123,7 @@ const QuizEnhanced = ({ words, onComplete, isPremium = false }) => {
           </div>
         </div>
 
-        {!isPremium && (
-          <div className="premium-quiz-upsell">
-            <span className="upsell-icon">⭐</span>
-            <span className="upsell-text">
-              Unlock advanced quiz types with Premium!
-            </span>
-            <button className="upsell-btn-quiz">Upgrade Now</button>
-          </div>
-        )}
+      
       </div>
     );
   }

@@ -1,377 +1,283 @@
 /**
- * 💳 Stripe Integration & Premium Management
- * Handles payments, subscriptions, and premium status
+ * 💳 UNIFIED STRIPE INTEGRATION - PRODUCTION READY
+ * Handles all premium access: Monthly, Yearly, Lifetime, AND Free Trial
+ * ✅ Works in development AND production (auto-detects domain)
  */
 
+import { useState, useEffect } from 'react';
+
 // ==========================================
-// STRIPE CONFIGURATION
+// CONFIGURATION
 // ==========================================
 
-// Stripe Publishable Keys (get from Stripe Dashboard)
-const STRIPE_PUBLISHABLE_KEY_TEST = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_TEST;
-const STRIPE_PUBLISHABLE_KEY_LIVE = process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY_LIVE;
+export const STRIPE_CONFIG = {
+  publishableKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
+  
+  prices: {
+    monthly: process.env.REACT_APP_STRIPE_MONTHLY_PRICE || 'price_monthly_xxx',
+    yearly: process.env.REACT_APP_STRIPE_YEARLY_PRICE || 'price_yearly_xxx',
+    lifetime: process.env.REACT_APP_STRIPE_LIFETIME_PRICE || 'price_lifetime_xxx'
+  },
+  
+  trialDays: 7
+};
 
-// Use test key in development, live key in production
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-export const STRIPE_KEY = IS_PRODUCTION ? STRIPE_PUBLISHABLE_KEY_LIVE : STRIPE_PUBLISHABLE_KEY_TEST;
-
-// Stripe Price IDs (create these in Stripe Dashboard)
-export const STRIPE_PRICES = {
-  monthly: process.env.REACT_APP_STRIPE_PRICE_MONTHLY, // e.g., "price_1234..."
-  yearly: process.env.REACT_APP_STRIPE_PRICE_YEARLY,   // e.g., "price_5678..."
+// ✅ NEW: Get base URL dynamically (works in dev AND production)
+const getBaseUrl = () => {
+  // Always use current origin (works everywhere)
+  return window.location.origin;
 };
 
 // ==========================================
-// PREMIUM STATUS MANAGEMENT
+// CORE FUNCTIONS
 // ==========================================
 
-/**
- * Check if user has active premium subscription
- */
-export function isPremiumUser() {
-  try {
-    const premiumData = localStorage.getItem('premium_status');
-    if (!premiumData) return false;
+export const initializeStripe = async () => {
+  const { loadStripe } = await import('@stripe/stripe-js');
+  return await loadStripe(STRIPE_CONFIG.publishableKey);
+};
 
-    const { active, expiresAt } = JSON.parse(premiumData);
+export const redirectToCheckout = async (planId, userId, userEmail) => {
+  try {
+    console.log('🚀 Redirecting to checkout:', { planId, userId, userEmail });
     
-    // Check if subscription is active and not expired
-    if (!active) return false;
-    if (expiresAt && new Date(expiresAt) < new Date()) {
-      // Subscription expired
-      setPremiumStatus(false);
-      return false;
-    }
+    const stripe = await initializeStripe();
+    const priceId = STRIPE_CONFIG.prices[planId];
 
-    return true;
-  } catch (error) {
-    console.error('Error checking premium status:', error);
-    return false;
-  }
-}
+    // ✅ FIXED: Dynamic URLs based on current domain
+    const baseUrl = getBaseUrl();
+    const successUrl = `${baseUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${baseUrl}/payment-cancelled`;
+    
+    console.log('📍 Current domain:', baseUrl);
+    console.log('✅ Redirect URLs:', { successUrl, cancelUrl });
 
-/**
- * Set premium status in localStorage
- */
-export function setPremiumStatus(isActive, expiresAt = null) {
-  const premiumData = {
-    active: isActive,
-    expiresAt: expiresAt,
-    updatedAt: new Date().toISOString(),
-  };
-  
-  localStorage.setItem('premium_status', JSON.stringify(premiumData));
-  
-  // Trigger event so other parts of app can react
-  window.dispatchEvent(new Event('premium_status_changed'));
-}
-
-/**
- * Get premium subscription details
- */
-export function getPremiumDetails() {
-  try {
-    const premiumData = localStorage.getItem('premium_status');
-    if (!premiumData) return null;
-
-    return JSON.parse(premiumData);
-  } catch (error) {
-    console.error('Error getting premium details:', error);
-    return null;
-  }
-}
-
-/**
- * Clear premium status (for logout or cancellation)
- */
-export function clearPremiumStatus() {
-  localStorage.removeItem('premium_status');
-  window.dispatchEvent(new Event('premium_status_changed'));
-}
-
-// ==========================================
-// STRIPE CHECKOUT
-// ==========================================
-
-/**
- * Redirect to Stripe Checkout
- * This creates a checkout session and redirects user to Stripe's hosted page
- */
-export async function createCheckoutSession(priceId, billingCycle = 'monthly') {
-  try {
-    // Call your backend to create checkout session
-    const response = await fetch('/api/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        priceId: billingCycle === 'monthly' ? STRIPE_PRICES.monthly : STRIPE_PRICES.yearly,
-        successUrl: `${window.location.origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancelUrl: `${window.location.origin}/pricing`,
-      }),
+    const { error } = await stripe.redirectToCheckout({
+      lineItems: [{ price: priceId, quantity: 1 }],
+      mode: planId === 'lifetime' ? 'payment' : 'subscription',
+      successUrl,
+      cancelUrl,
+      customerEmail: userEmail,
+      clientReferenceId: userId,
+      ...(planId !== 'lifetime' && planId !== 'monthly' && {
+        subscriptionData: {
+          trialPeriodDays: STRIPE_CONFIG.trialDays
+        }
+      })
     });
-
-    const { sessionId } = await response.json();
-
-    // Redirect to Stripe Checkout
-    const stripe = window.Stripe(STRIPE_KEY);
-    const { error } = await stripe.redirectToCheckout({ sessionId });
 
     if (error) {
-      throw new Error(error.message);
+      console.error('❌ Stripe error:', error);
+      throw error;
     }
   } catch (error) {
-    console.error('Checkout error:', error);
+    console.error('❌ Checkout error:', error);
     throw error;
   }
-}
+};
 
-/**
- * Handle successful payment (call this on success page)
- */
-export async function handleSuccessfulPayment(sessionId) {
-  try {
-    // Verify session with backend
-    const response = await fetch(`/api/verify-session/${sessionId}`);
-    const data = await response.json();
+export const startFreeTrial = (userId) => {
+  const trialEndDate = new Date();
+  trialEndDate.setDate(trialEndDate.getDate() + STRIPE_CONFIG.trialDays);
 
-    if (data.success) {
-      // Set premium status
-      const expiresAt = data.subscription.current_period_end 
-        ? new Date(data.subscription.current_period_end * 1000).toISOString()
-        : null;
-      
-      setPremiumStatus(true, expiresAt);
-      
-      return {
-        success: true,
-        subscription: data.subscription,
-      };
-    }
-
-    return { success: false };
-  } catch (error) {
-    console.error('Error verifying payment:', error);
-    return { success: false, error };
-  }
-}
-
-// ==========================================
-// CUSTOMER PORTAL
-// ==========================================
-
-/**
- * Redirect to Stripe Customer Portal
- * Users can manage their subscription, update payment methods, etc.
- */
-export async function openCustomerPortal() {
-  try {
-    const response = await fetch('/api/create-portal-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        returnUrl: window.location.origin + '/dashboard',
-      }),
-    });
-
-    const { url } = await response.json();
-    window.location.href = url;
-  } catch (error) {
-    console.error('Portal error:', error);
-    throw error;
-  }
-}
-
-// ==========================================
-// WEBHOOK HANDLING (for backend)
-// ==========================================
-
-/**
- * Example webhook handler
- * Put this in your backend (Node.js/Express example)
- */
-export const WEBHOOK_HANDLER_EXAMPLE = `
-// Backend: api/webhook.js
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
-app.post('/api/webhook', express.raw({type: 'application/json'}), (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-  } catch (err) {
-    return res.status(400).send(\`Webhook Error: \${err.message}\`);
-  }
-
-  // Handle events
-  switch (event.type) {
-    case 'checkout.session.completed':
-      // Payment successful
-      const session = event.data.object;
-      // Update user's premium status in database
-      break;
-      
-    case 'customer.subscription.updated':
-      // Subscription changed
-      const subscription = event.data.object;
-      // Update user's subscription in database
-      break;
-      
-    case 'customer.subscription.deleted':
-      // Subscription cancelled
-      const cancelledSub = event.data.object;
-      // Remove user's premium status
-      break;
-  }
-
-  res.json({received: true});
-});
-`;
-
-// ==========================================
-// SIMPLE MODE (No Backend Required)
-// ==========================================
-
-/**
- * For quick testing without a backend
- * This simulates a successful payment
- * REMOVE THIS IN PRODUCTION!
- */
-export function simulatePremiumPurchase(billingCycle = 'yearly') {
-  console.warn('⚠️ SIMULATION MODE - Remove in production!');
-  
-  const expiresAt = new Date();
-  if (billingCycle === 'monthly') {
-    expiresAt.setMonth(expiresAt.getMonth() + 1);
-  } else {
-    expiresAt.setFullYear(expiresAt.getFullYear() + 1);
-  }
-  
-  setPremiumStatus(true, expiresAt.toISOString());
-  
-  return {
-    success: true,
-    message: 'Premium activated (simulation)',
-    expiresAt: expiresAt.toISOString(),
+  const trialInfo = {
+    userId,
+    startDate: new Date().toISOString(),
+    endDate: trialEndDate.toISOString(),
+    isActive: true,
+    source: 'trial'
   };
-}
+
+  localStorage.setItem('trial_info', JSON.stringify(trialInfo));
+  console.log('✅ Free trial started:', trialInfo);
+  
+  return trialInfo;
+};
+
+export const checkTrialStatus = () => {
+  try {
+    const trialInfo = localStorage.getItem('trial_info');
+    
+    if (!trialInfo) {
+      return { isActive: false, daysRemaining: 0 };
+    }
+
+    const trial = JSON.parse(trialInfo);
+    const now = new Date();
+    const endDate = new Date(trial.endDate);
+    
+    const isActive = now < endDate;
+    const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+
+    return {
+      isActive,
+      daysRemaining: Math.max(0, daysRemaining),
+      endDate: trial.endDate,
+      source: 'trial'
+    };
+  } catch (error) {
+    return { isActive: false, daysRemaining: 0 };
+  }
+};
+
+export const checkSubscriptionStatus = () => {
+  try {
+    const subscription = localStorage.getItem('subscription_status');
+    
+    if (!subscription) {
+      return { isActive: false, plan: null };
+    }
+
+    const sub = JSON.parse(subscription);
+    
+    return {
+      isActive: sub.isActive,
+      plan: sub.plan,
+      source: 'subscription',
+      activatedAt: sub.activatedAt
+    };
+  } catch (error) {
+    return { isActive: false, plan: null };
+  }
+};
+
+export const checkPremiumStatus = () => {
+  // Priority 1: Check active subscription
+  const subscription = checkSubscriptionStatus();
+  if (subscription.isActive) {
+    return {
+      isPremium: true,
+      source: 'subscription',
+      plan: subscription.plan,
+      activatedAt: subscription.activatedAt
+    };
+  }
+
+  // Priority 2: Check active trial
+  const trial = checkTrialStatus();
+  if (trial.isActive) {
+    return {
+      isPremium: true,
+      source: 'trial',
+      daysRemaining: trial.daysRemaining,
+      endDate: trial.endDate
+    };
+  }
+
+  // No premium access
+  return {
+    isPremium: false,
+    source: 'free'
+  };
+};
+
+export const activateSubscription = (planId, subscriptionId) => {
+  const subscription = {
+    plan: planId,
+    subscriptionId,
+    isActive: true,
+    activatedAt: new Date().toISOString()
+  };
+
+  localStorage.setItem('subscription_status', JSON.stringify(subscription));
+  localStorage.removeItem('trial_info');
+  
+  console.log('✅ Subscription activated:', subscription);
+  return subscription;
+};
+
+export const clearPremiumStatus = () => {
+  localStorage.removeItem('trial_info');
+  localStorage.removeItem('subscription_status');
+  console.log('🧹 All premium status cleared');
+};
 
 // ==========================================
-// REACT HOOK FOR PREMIUM STATUS
+// REACT HOOK - USE THIS IN COMPONENTS
 // ==========================================
 
-/**
- * Custom React hook to track premium status
- * Usage: const isPremium = usePremiumStatus();
- */
-export function usePremiumStatus() {
-  const [isPremium, setIsPremium] = React.useState(() => isPremiumUser());
+export const useSubscription = (userId) => {
+  const [status, setStatus] = useState({
+    isPremium: false,
+    isLoading: true,
+    source: 'free',
+    plan: null,
+    daysRemaining: 0
+  });
 
-  React.useEffect(() => {
-    const handleStatusChange = () => {
-      setIsPremium(isPremiumUser());
+  useEffect(() => {
+    const loadStatus = () => {
+      const premiumStatus = checkPremiumStatus();
+      
+      setStatus({
+        ...premiumStatus,
+        isLoading: false
+      });
+
+      console.log('🔍 Premium status checked:', premiumStatus);
     };
 
-    window.addEventListener('premium_status_changed', handleStatusChange);
-    return () => window.removeEventListener('premium_status_changed', handleStatusChange);
+    loadStatus();
+    
+    const interval = setInterval(loadStatus, 60000);
+    
+    return () => clearInterval(interval);
+  }, [userId]);
+
+  const startTrial = () => {
+    startFreeTrial(userId);
+    const newStatus = checkPremiumStatus();
+    setStatus({
+      ...newStatus,
+      isLoading: false
+    });
+  };
+
+  const upgradeToPremium = async (planId, userEmail) => {
+    await redirectToCheckout(planId, userId, userEmail);
+  };
+
+  return {
+    ...status,
+    startTrial,
+    upgradeToPremium
+  };
+};
+
+// Legacy compatibility
+export const usePremiumStatus = () => {
+  const [isPremium, setIsPremium] = useState(false);
+
+  useEffect(() => {
+    const status = checkPremiumStatus();
+    setIsPremium(status.isPremium);
+    
+    const interval = setInterval(() => {
+      const newStatus = checkPremiumStatus();
+      setIsPremium(newStatus.isPremium);
+    }, 60000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   return isPremium;
-}
+};
 
-// ==========================================
-// EXPORTS
-// ==========================================
+export const simulatePremiumPurchase = (billingCycle) => {
+  console.warn('⚠️ simulatePremiumPurchase is deprecated');
+  activateSubscription(billingCycle, 'simulated_' + Date.now());
+};
 
 export default {
-  isPremiumUser,
-  setPremiumStatus,
-  getPremiumDetails,
+  initializeStripe,
+  redirectToCheckout,
+  startFreeTrial,
+  checkTrialStatus,
+  checkSubscriptionStatus,
+  checkPremiumStatus,
+  activateSubscription,
   clearPremiumStatus,
-  createCheckoutSession,
-  handleSuccessfulPayment,
-  openCustomerPortal,
-  simulatePremiumPurchase, // Remove in production!
+  useSubscription,
   usePremiumStatus,
-  STRIPE_KEY,
-  STRIPE_PRICES,
+  STRIPE_CONFIG
 };
-`;
-
-// Add React import for the hook
-import React from 'react';
-
-// Re-export the hook so it can be used
-export function usePremiumStatus() {
-  const [isPremium, setIsPremium] = React.useState(() => isPremiumUser());
-
-  React.useEffect(() => {
-    const handleStatusChange = () => {
-      setIsPremium(isPremiumUser());
-    };
-
-    window.addEventListener('premium_status_changed', handleStatusChange);
-    return () => window.removeEventListener('premium_status_changed', handleStatusChange);
-  }, []);
-
-  return isPremium;
-}
-
-function isPremiumUser() {
-  try {
-    const premiumData = localStorage.getItem('premium_status');
-    if (!premiumData) return false;
-
-    const { active, expiresAt } = JSON.parse(premiumData);
-    
-    if (!active) return false;
-    if (expiresAt && new Date(expiresAt) < new Date()) {
-      setPremiumStatus(false);
-      return false;
-    }
-
-    return true;
-  } catch (error) {
-    console.error('Error checking premium status:', error);
-    return false;
-  }
-}
-
-function setPremiumStatus(isActive, expiresAt = null) {
-  const premiumData = {
-    active: isActive,
-    expiresAt: expiresAt,
-    updatedAt: new Date().toISOString(),
-  };
-  
-  localStorage.setItem('premium_status', JSON.stringify(premiumData));
-  window.dispatchEvent(new Event('premium_status_changed'));
-}
-
-export function simulatePremiumPurchase(billingCycle = 'yearly') {
-  console.warn('⚠️ SIMULATION MODE - Remove in production!');
-  
-  const expiresAt = new Date();
-  if (billingCycle === 'monthly') {
-    expiresAt.setMonth(expiresAt.getMonth() + 1);
-  } else {
-    expiresAt.setFullYear(expiresAt.getFullYear() + 1);
-  }
-  
-  setPremiumStatus(true, expiresAt.toISOString());
-  
-  return {
-    success: true,
-    message: 'Premium activated (simulation)',
-    expiresAt: expiresAt.toISOString(),
-  };
-}
-
-export function clearPremiumStatus() {
-  localStorage.removeItem('premium_status');
-  window.dispatchEvent(new Event('premium_status_changed'));
-}
