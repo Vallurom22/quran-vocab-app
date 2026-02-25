@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
+// Import learning method components
+import ActiveRecall from './ActiveRecall';
+import MnemonicsStories from './MnemonicsStories';
 import { getWordDatabase } from './data/ExpandedWordDatabase';
 import { usePremiumStatus, simulatePremiumPurchase } from './utils/StripeIntegration';
 import WordContextPremium from './components/WordContextPremium';

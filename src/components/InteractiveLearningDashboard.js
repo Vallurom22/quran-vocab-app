@@ -2,9 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './InteractiveLearningDashboard.css';
 import { srsManager } from '../utils/SpacedRepetition';
 
+// Import learning method components
+import ActiveRecall from './ActiveRecall';
+import MnemonicsStories from './MnemonicsStories';
+import MultiSensoryLearning from './MultiSensoryLearning';
+import Flashcard from './Flashcard';
+
 const InteractiveLearningDashboard = ({ 
-  words = [], // DEFAULT to empty array
-  knownWords = [], // DEFAULT to empty array
+  words = [], 
+  knownWords = [], 
   onClose, 
   onStartReview,
   onStartLearn,
@@ -14,6 +20,10 @@ const InteractiveLearningDashboard = ({
   const [srsStats, setSrsStats] = useState({});
   const [dailyRoutine, setDailyRoutine] = useState({});
   const [timeOfDay, setTimeOfDay] = useState('morning');
+  
+  // NEW: State for active learning method
+  const [activeMethod, setActiveMethod] = useState(null);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
   useEffect(() => {
     loadStats();
@@ -114,6 +124,85 @@ const InteractiveLearningDashboard = ({
 
   const recommendation = getTimeBasedRecommendation();
 
+  // ========================================
+  // LEARNING METHOD HANDLERS
+  // ========================================
+
+  const handleStartMethod = (methodType) => {
+    setActiveMethod(methodType);
+    setCurrentWordIndex(0);
+  };
+
+  const handleCloseMethod = () => {
+    setActiveMethod(null);
+    setCurrentWordIndex(0);
+  };
+
+  const handleNextWord = () => {
+    if (currentWordIndex < safeWords.length - 1) {
+      setCurrentWordIndex(currentWordIndex + 1);
+    }
+  };
+
+  const handlePreviousWord = () => {
+    if (currentWordIndex > 0) {
+      setCurrentWordIndex(currentWordIndex - 1);
+    }
+  };
+
+  // ========================================
+  // RENDER ACTIVE LEARNING METHOD
+  // ========================================
+
+  // If a learning method is active, show it instead of dashboard
+  if (activeMethod === 'spaced-repetition') {
+    return (
+      <Flashcard
+        word={safeWords[currentWordIndex]}
+        onNext={handleNextWord}
+        onPrevious={handlePreviousWord}
+        onKnow={(wordId) => {/* mark as known */}}
+        current={currentWordIndex + 1}
+        total={safeWords.length}
+        relatedWords={safeWords.filter(w => w.root === safeWords[currentWordIndex]?.root)}
+        onClose={handleCloseMethod}
+      />
+    );
+  }
+
+  if (activeMethod === 'mnemonics') {
+    return (
+      <MnemonicsStories
+        words={safeWords}
+        onClose={handleCloseMethod}
+      />
+    );
+  }
+
+  if (activeMethod === 'active-recall') {
+    return (
+      <ActiveRecall
+        words={safeWords}
+        onClose={handleCloseMethod}
+        knownWords={safeKnownWords}
+      />
+    );
+  }
+
+  if (activeMethod === 'multi-sensory') {
+    return (
+      <MultiSensoryLearning
+        word={safeWords[currentWordIndex]}
+        onClose={handleCloseMethod}
+        onNext={handleNextWord}
+      />
+    );
+  }
+
+  // ========================================
+  // MAIN DASHBOARD RENDER
+  // ========================================
+
   return (
     <div className="learning-dashboard-overlay">
       <div className="learning-dashboard-modal">
@@ -164,7 +253,9 @@ const InteractiveLearningDashboard = ({
               <button 
                 className="rec-action-btn"
                 onClick={() => {
-                  if (recommendation.type === 'review' && onStartReview) onStartReview();
+                  if (recommendation.type === 'review') handleStartMethod('spaced-repetition');
+                  else if (recommendation.type === 'mnemonic') handleStartMethod('mnemonics');
+                  else if (recommendation.type === 'test') handleStartMethod('active-recall');
                   else if (recommendation.type === 'learn' && onStartLearn) onStartLearn();
                 }}
               >
@@ -178,8 +269,11 @@ const InteractiveLearningDashboard = ({
                 <div className="stat-icon">⏰</div>
                 <div className="stat-value">{srsStats.dueToday || 0}</div>
                 <div className="stat-label">Due Today</div>
-                {srsStats.dueToday > 0 && onStartReview && (
-                  <button className="stat-action" onClick={onStartReview}>
+                {srsStats.dueToday > 0 && (
+                  <button 
+                    className="stat-action" 
+                    onClick={() => handleStartMethod('spaced-repetition')}
+                  >
                     Review Now
                   </button>
                 )}
@@ -211,6 +305,7 @@ const InteractiveLearningDashboard = ({
             <div className="methods-section">
               <h3>🎓 Learning Methods</h3>
               
+              {/* Spaced Repetition */}
               <div className="method-card">
                 <div className="method-icon">🔄</div>
                 <div className="method-content">
@@ -221,13 +316,15 @@ const InteractiveLearningDashboard = ({
                     <span>✓ Schedules: 1d → 3d → 1w → 1m</span>
                   </div>
                 </div>
-                {onStartReview && (
-                  <button className="method-btn" onClick={onStartReview}>
-                    Start
-                  </button>
-                )}
+                <button 
+                  className="method-btn" 
+                  onClick={() => handleStartMethod('spaced-repetition')}
+                >
+                  Start
+                </button>
               </div>
 
+              {/* Mnemonics & Stories */}
               <div className="method-card">
                 <div className="method-icon">💭</div>
                 <div className="method-content">
@@ -238,11 +335,15 @@ const InteractiveLearningDashboard = ({
                     <span>✓ Visual + emotional memory</span>
                   </div>
                 </div>
-                <button className="method-btn">
+                <button 
+                  className="method-btn"
+                  onClick={() => handleStartMethod('mnemonics')}
+                >
                   Create
                 </button>
               </div>
 
+              {/* Active Recall */}
               <div className="method-card">
                 <div className="method-icon">🎯</div>
                 <div className="method-content">
@@ -253,11 +354,15 @@ const InteractiveLearningDashboard = ({
                     <span>✓ Strengthens neural pathways</span>
                   </div>
                 </div>
-                <button className="method-btn">
+                <button 
+                  className="method-btn"
+                  onClick={() => handleStartMethod('active-recall')}
+                >
                   Practice
                 </button>
               </div>
 
+              {/* Multi-Sensory */}
               <div className="method-card">
                 <div className="method-icon">🎨</div>
                 <div className="method-content">
@@ -268,7 +373,10 @@ const InteractiveLearningDashboard = ({
                     <span>✓ Deeper retention</span>
                   </div>
                 </div>
-                <button className="method-btn">
+                <button 
+                  className="method-btn"
+                  onClick={() => handleStartMethod('multi-sensory')}
+                >
                   Practice
                 </button>
               </div>
@@ -302,11 +410,15 @@ const InteractiveLearningDashboard = ({
                     <h5>Review 5-10 Spaced Repetition Words</h5>
                     <p>Review words that are due today based on the forgetting curve</p>
                   </div>
-                  {onStartReview && (
-                    <button className="task-btn" onClick={onStartReview}>
-                      Start Review
-                    </button>
-                  )}
+                  <button 
+                    className="task-btn" 
+                    onClick={() => {
+                      handleStartMethod('spaced-repetition');
+                      markRoutineComplete('morning');
+                    }}
+                  >
+                    Start Review
+                  </button>
                 </div>
               </div>
             </div>
@@ -329,7 +441,13 @@ const InteractiveLearningDashboard = ({
                     <h5>Create Mnemonics & Mini-Stories</h5>
                     <p>Link 3-5 new words with vivid imagery and personal stories</p>
                   </div>
-                  <button className="task-btn">
+                  <button 
+                    className="task-btn"
+                    onClick={() => {
+                      handleStartMethod('mnemonics');
+                      markRoutineComplete('midday');
+                    }}
+                  >
                     Create Stories
                   </button>
                 </div>
@@ -340,7 +458,10 @@ const InteractiveLearningDashboard = ({
                     <h5>Themed Clustering</h5>
                     <p>Learn 5 words from the same theme (e.g., food, family)</p>
                   </div>
-                  <button className="task-btn">
+                  <button 
+                    className="task-btn"
+                    onClick={() => handleStartMethod('multi-sensory')}
+                  >
                     Choose Theme
                   </button>
                 </div>
@@ -365,7 +486,13 @@ const InteractiveLearningDashboard = ({
                     <h5>Active Recall Test</h5>
                     <p>Cover and say words aloud without looking</p>
                   </div>
-                  <button className="task-btn">
+                  <button 
+                    className="task-btn"
+                    onClick={() => {
+                      handleStartMethod('active-recall');
+                      markRoutineComplete('evening');
+                    }}
+                  >
                     Start Test
                   </button>
                 </div>
@@ -376,7 +503,10 @@ const InteractiveLearningDashboard = ({
                     <h5>Speak & Listen</h5>
                     <p>Say 5 words aloud and listen to native pronunciation</p>
                   </div>
-                  <button className="task-btn">
+                  <button 
+                    className="task-btn"
+                    onClick={() => handleStartMethod('multi-sensory')}
+                  >
                     Practice
                   </button>
                 </div>
@@ -431,7 +561,7 @@ const InteractiveLearningDashboard = ({
           </div>
         )}
 
-        {/* PROGRESS TAB */}
+        {/* PROGRESS TAB - Keep existing code */}
         {currentView === 'progress' && (
           <div className="dashboard-content">
             

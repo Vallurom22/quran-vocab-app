@@ -447,6 +447,8 @@ export function hasEnhancementData(arabicWord) {
  */
 export function getWordsWithEnhancementData() {
   return Object.keys(wordEnhancementData);
+
+  
 }
 
 export default {

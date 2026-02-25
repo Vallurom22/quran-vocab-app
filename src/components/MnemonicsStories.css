@@ -1,0 +1,658 @@
+/* ==========================================
+   🧠 MNEMONICS & STORIES CSS
+   Beautiful memory-based learning interface
+   ========================================== */
+
+.mnemonics-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  min-height: 100vh;
+}
+
+/* Header */
+.mnemonics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.back-btn {
+  background: transparent;
+  border: none;
+  color: #0d7377;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.back-btn:hover {
+  background: rgba(13, 115, 119, 0.1);
+}
+
+.mnemonics-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1446;
+  margin: 0;
+}
+
+.stats-badge {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Info Banner */
+.info-banner {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(244, 208, 63, 0.1));
+  border-left: 4px solid #d4af37;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.info-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.info-text {
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.6;
+}
+
+.info-text strong {
+  color: #d4af37;
+  font-weight: 700;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.filter-tab {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.filter-tab:hover {
+  border-color: #0d7377;
+  transform: translateY(-2px);
+}
+
+.filter-tab.active {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  border-color: #0d7377;
+  color: white;
+  box-shadow: 0 4px 12px rgba(13, 115, 119, 0.3);
+}
+
+/* Words Grid */
+.mnemonics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+/* Mnemonic Card */
+.mnemonic-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.mnemonic-card:hover {
+  border-color: #0d7377;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(13, 115, 119, 0.15);
+}
+
+.mnemonic-card.has-story {
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+/* Story Badge */
+.story-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.story-badge.user {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.story-badge.built-in {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  color: white;
+}
+
+/* Card Content */
+.card-arabic {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1446;
+  text-align: center;
+  direction: rtl;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+.card-english {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0d7377;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.card-trans {
+  font-size: 13px;
+  color: #6c757d;
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+/* Story Preview */
+.story-preview {
+  background: linear-gradient(135deg, rgba(13, 115, 119, 0.05), rgba(20, 255, 236, 0.05));
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.preview-icon {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.preview-text {
+  font-size: 13px;
+  color: #495057;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Create Prompt */
+.create-prompt {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(244, 208, 63, 0.1));
+  border: 2px dashed rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 12px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.mnemonic-card:hover .create-prompt {
+  border-color: #d4af37;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(244, 208, 63, 0.2));
+}
+
+.prompt-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+  color: #d4af37;
+}
+
+.prompt-text {
+  font-size: 13px;
+  color: #d4af37;
+  font-weight: 600;
+}
+
+/* Detail Modal */
+.detail-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.detail-modal {
+  background: white;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: #495057;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: rotate(90deg);
+}
+
+/* Modal Word Info */
+.modal-word-info {
+  padding: 48px 32px 32px;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(13, 115, 119, 0.05), rgba(20, 255, 236, 0.05));
+  border-bottom: 2px solid #e9ecef;
+}
+
+.modal-arabic {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1a1446;
+  direction: rtl;
+  margin-bottom: 12px;
+}
+
+.modal-english {
+  font-size: 24px;
+  font-weight: 600;
+  color: #0d7377;
+  margin-bottom: 8px;
+}
+
+.modal-trans {
+  font-size: 16px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Mnemonic Display */
+.mnemonic-display {
+  padding: 32px;
+}
+
+.mnemonic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.mnemonic-header h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1446;
+  margin: 0;
+}
+
+.technique-badge {
+  background: linear-gradient(135deg, #d4af37, #f4d03f);
+  color: #1a1446;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.mnemonic-content {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-radius: 16px;
+  padding: 24px;
+  border: 2px solid #e9ecef;
+}
+
+.mnemonic-image {
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.mnemonic-story {
+  font-size: 16px;
+  color: #495057;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* Story Actions */
+.story-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.edit-story-btn,
+.delete-story-btn {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+
+.edit-story-btn {
+  background: linear-gradient(135deg, #0d7377, #14ffec);
+  color: white;
+}
+
+.edit-story-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 115, 119, 0.3);
+}
+
+.delete-story-btn {
+  background: white;
+  color: #f44336;
+  border: 2px solid #f44336;
+}
+
+.delete-story-btn:hover {
+  background: #f44336;
+  color: white;
+}
+
+/* Create Prompt (in modal) */
+.create-mnemonic-prompt {
+  padding: 48px 32px;
+  text-align: center;
+}
+
+.prompt-icon-large {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.create-mnemonic-prompt h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1446;
+  margin-bottom: 12px;
+}
+
+.create-mnemonic-prompt p {
+  font-size: 16px;
+  color: #6c757d;
+  margin-bottom: 24px;
+}
+
+.create-story-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.create-story-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* Tips Section */
+.mnemonic-tips {
+  padding: 24px 32px 32px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(244, 208, 63, 0.05));
+  border-top: 2px solid #e9ecef;
+}
+
+.mnemonic-tips h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1446;
+  margin-bottom: 16px;
+}
+
+.mnemonic-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mnemonic-tips li {
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.8;
+  padding-left: 24px;
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.mnemonic-tips li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #d4af37;
+  font-weight: 700;
+}
+
+.mnemonic-tips strong {
+  color: #0d7377;
+  font-weight: 700;
+}
+
+/* Create Modal */
+.create-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.create-modal {
+  background: white;
+  border-radius: 20px;
+  max-width: 600px;
+  width: 100%;
+  padding: 32px;
+  animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.create-modal h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1446;
+  margin-bottom: 8px;
+}
+
+.create-subtitle {
+  font-size: 16px;
+  color: #0d7377;
+  margin-bottom: 20px;
+}
+
+.story-input {
+  width: 100%;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.story-input:focus {
+  outline: none;
+  border-color: #0d7377;
+  box-shadow: 0 0 0 4px rgba(13, 115, 119, 0.1);
+}
+
+.create-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.save-story-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+
+.save-story-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.save-story-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.save-story-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cancel-btn {
+  background: white;
+  color: #495057;
+  border: 2px solid #e9ecef;
+}
+
+.cancel-btn:hover {
+  background: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mnemonics-container {
+    padding: 16px;
+  }
+
+  .mnemonics-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .mnemonics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-tabs {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .filter-tab {
+    flex-shrink: 0;
+  }
+
+  .modal-arabic {
+    font-size: 36px;
+  }
+
+  .modal-english {
+    font-size: 20px;
+  }
+
+  .detail-modal,
+  .create-modal {
+    border-radius: 20px 20px 0 0;
+    max-height: 95vh;
+  }
+
+  .create-actions {
+    flex-direction: column;
+  }
+
+  .save-story-btn,
+  .cancel-btn {
+    width: 100%;
+  }
+}
