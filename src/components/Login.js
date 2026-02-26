@@ -71,7 +71,7 @@ const Login = ({ onClose, onSwitchToSignup, onSwitchToReset }) => {
         {/* Header */}
         <div className="auth-header">
           <div className="auth-icon">🕌</div>
-          <h2>Welcome Back!</h2>
+          <h2>"Welcome to Kalima"</h2>
           <p>Sign in to continue your learning journey</p>
         </div>
 

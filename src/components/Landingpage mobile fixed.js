@@ -87,7 +87,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
 
           {/* Title with Animation */}
           <h1 className="hero-title">
-            <span className="title-line-1">Quran Vocabulary</span>
+            <span className="title-line-1">Kalima - Quarnic Vocabulary</span>
             <span className="title-line-2">Learn Arabic Through the Words of Allah</span>
           </h1>
 
@@ -233,7 +233,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
               </div>
               <h3 className="feature-title">100% Free Core Features</h3>
               <p className="feature-description">
-                1000+ essential words, flashcards, quizzes, and progress tracking - completely free forever
+                 Includes flashcards, quizzes, and progress tracking - completely free forever
               </p>
             </div>
 
@@ -272,7 +272,7 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
               <div className="step-number">1</div>
               <div className="step-content">
                 <h3>Start with Essential Words</h3>
-                <p>Begin with the 1000+ most frequent words in the Quran - these cover over 70% of the text you'll encounter</p>
+                <p>Begin with the most frequent words in the Quran - these cover over 70% of the text you'll encounter</p>
               </div>
             </div>
 

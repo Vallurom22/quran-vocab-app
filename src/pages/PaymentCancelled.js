@@ -29,7 +29,7 @@ const PaymentCancelled = () => {
 
         {/* Why Subscribe Section */}
         <div className="why-subscribe">
-          <h3>Why Go Premium?</h3>
+          <h3>Why leave Kalima Premium?</h3>
           <ul>
             <li>📚 Access 1000+ Quranic words</li>
             <li>🧠 Advanced learning features</li>

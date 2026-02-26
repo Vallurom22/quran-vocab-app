@@ -67,8 +67,8 @@ const LandingPage = ({ onStart, totalWords, knownWords }) => {
 
           {/* Title with Animation */}
           <h1 className="hero-title">
-            <span className="title-line-1">Quran Vocabulary</span>
-            <span className="title-line-2">Learn Arabic Through the Words of Allah</span>
+            <span className="title-line-1">Kalima - Quarnic Vocabulary</span>
+            <span className="title-line-2">Start building your Arabic vocabulary today!!</span>
           </h1>
 
           {/* Subtitle */}

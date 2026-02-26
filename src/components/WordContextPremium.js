@@ -30,12 +30,12 @@ const WordContextSimplified = ({
   const [loadingVerses, setLoadingVerses] = useState(false);
 
   const premiumData = word.premium || {};
-  const isFeatureLocked = wordIndex >= 500 && !isPremium;
+  const isFeatureLocked = !isPremium;
 
   // Fetch verses
   useEffect(() => {
     async function fetchVerses() {
-      if (!isFeatureLocked && premiumData.verses && premiumData.verses.length > 0) {
+     if (isPremium && premiumData.verses && premiumData.verses.length > 0) {
         setLoadingVerses(true);
         try {
           const verses = await getVerses(premiumData.verses);

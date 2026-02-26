@@ -1,25 +1,30 @@
 /**
- * Expanded Word Database - With Premium 500 Words
+ * Expanded Word Database - With 1000 Words
  * FREE: 500 words with full features
- * PREMIUM: 680 words total (500 base + 180 premium Names of Allah + categories)
+ * PREMIUM: 1000 words total
  */
 
 import { quranWords } from './words';
-
-// Import premium words (99 Names + essential categories)
 import premiumWords from './PremiumWords_500';
 import words501to1000 from './Words501to1000';
+import { ADDITIONAL_QURANIC_WORDS } from './AdditionalWords';
 
-// Combine all words
-const allWords = [...quranWords, ...premiumWords, ...words501to1000];
+// ==========================================
+// COMBINE ALL WORDS FIRST (BEFORE USING IT)
+// ==========================================
+const allWords = [
+  ...quranWords, 
+  ...premiumWords, 
+  ...words501to1000, 
+  ...ADDITIONAL_QURANIC_WORDS
+];
 
-/**
- * Premium word enhancement data with REAL Quran verses
- */
+console.log('✅ Total words loaded:', allWords.length);
+
+// ==========================================
+// WORD ENHANCEMENT DATA
+// ==========================================
 const wordEnhancementData = {
-  // All users get this data for first 500 words
-  // Premium users get this for all 680 words
-  
   'الله': {
     verses: [
       { surah: 112, ayah: 1, context: 'Surah Al-Ikhlas - Defines the oneness of Allah' },
@@ -355,20 +360,9 @@ const wordEnhancementData = {
   },
 };
 
-/**
- * Get word database based on premium status
- * FREE: 500 words with FULL features
- * PREMIUM: 680 words with FULL features
- */
-export function getWordDatabase(isPremium = false) {
-  if (isPremium) {
-    // Premium users get ALL words with enhancements
-    return allWords.map(word => enrichWordWithData(word));
-  } else {
-    // Free users get first 500 words with FULL enhancements
-    return allWords.slice(0, 500).map(word => enrichWordWithData(word));
-  }
-}
+// ==========================================
+// HELPER FUNCTIONS (AFTER allWords is defined)
+// ==========================================
 
 /**
  * Enrich a word with enhancement data
@@ -384,6 +378,21 @@ function enrichWordWithData(word) {
   }
   
   return word;
+}
+
+/**
+ * Get word database based on premium status
+ * FREE: 500 words with FULL features
+ * PREMIUM: 1000 words with FULL features
+ */
+export function getWordDatabase(isPremium = false) {
+  if (isPremium) {
+    // Premium users get ALL words with enhancements
+    return allWords.map(word => enrichWordWithData(word));
+  } else {
+    // Free users get first 500 words with FULL enhancements
+    return allWords.slice(0, 500).map(word => enrichWordWithData(word));
+  }
 }
 
 /**
@@ -410,15 +419,15 @@ export function getPremiumContext(word, isPremium = false, wordIndex = 0) {
     };
   }
   
-  // Words 501-680 require premium
+  // Words 501-1000 require premium
   if (!isPremium) {
     return {
       locked: true,
-      message: "Upgrade to Premium to unlock words 501-680"
+      message: "Upgrade to Premium to unlock words 501-1000"
     };
   }
   
-  // Premium user accessing words 501-680
+  // Premium user accessing words 501-1000
   const enhancementData = wordEnhancementData[word.arabic];
   
   if (enhancementData) {
@@ -447,8 +456,6 @@ export function hasEnhancementData(arabicWord) {
  */
 export function getWordsWithEnhancementData() {
   return Object.keys(wordEnhancementData);
-
-  
 }
 
 export default {

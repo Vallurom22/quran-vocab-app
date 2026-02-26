@@ -360,10 +360,20 @@ const QuizEnhanced = ({ words, onComplete, isPremium = false }) => {
 
       {/* Hint Button */}
       <div className="quiz-hint-section">
-        <button className="hint-btn-quiz">
-          💡 Show Hint
-          {!isPremium && <span className="premium-badge-quiz">PRO</span>}
-        </button>
+        <button 
+          className="hint-btn-quiz"
+          onClick={() => {
+            if (isPremium) {
+           // Show hint logic here
+           alert(`Hint: The word is related to ${currentWord.category}`);
+           } else {
+             alert('Hints are available with Premium! Upgrade to unlock.');
+         }
+       }}
+>
+  💡 Show Hint
+  {!isPremium && <span className="premium-badge-quiz">PRO</span>}
+</button>
       </div>
     </div>
   );

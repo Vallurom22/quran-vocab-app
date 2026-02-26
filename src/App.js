@@ -344,13 +344,13 @@ function AppContent() {
         <>
           <header className="app-header-clean">
             <div className="header-content-clean">
-              <h1 className="app-title-clean">🕌 Quran Vocabulary</h1>
+              <h1 className="app-title-clean">🕌 Kalima - Quarnic Vocabulary</h1>
               
               <div className="header-auth" style={{ display: 'flex', gap: '12px', alignItems: 'center', position: 'relative', zIndex: 100, pointerEvents: 'auto' }}>
                 {user ? (
                   <>
                     <span className="user-email" style={{ fontSize: '14px', fontWeight: 600 }}>
-                      👤 {user.email}
+                      👤 {user.id}
                     </span>
                     <button 
                       className="auth-trigger-btn"
@@ -456,7 +456,7 @@ function AppContent() {
                     className="search-input"
                     value={searchTerm}
                     onChange={handleSearchChange}
-                    maxLength={100}
+                    maxLength={40}
                   />
                 </div>
 

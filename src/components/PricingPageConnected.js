@@ -150,7 +150,7 @@ const PricingPageConnected = ({ onClose, currentPlan = 'free' }) => {
         <div className="pricing-header">
           <h1>Choose Your Path to Understanding the Quran</h1>
           <p className="pricing-subtitle">
-            Start learning Quranic Arabic today
+            Learn Quranic Arabic vocabulary with the best value plans designed for every learner. Start your journey today!
           </p>
 
           {/* Trial Status Banner */}
@@ -375,7 +375,7 @@ const PricingPageConnected = ({ onClose, currentPlan = 'free' }) => {
         {/* Final CTA */}
         <div className="final-cta">
           <h3>🚀 Start Understanding the Quran Today</h3>
-          <p>Join thousands of Muslims learning Quranic Arabic</p>
+          <p>Join thousands with Kalima - the best way to learn Quranic Arabic vocabulary.</p>
           {!user && (
             <p className="signin-prompt">
               <strong>Please sign in to continue</strong>

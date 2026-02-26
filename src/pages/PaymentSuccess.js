@@ -54,7 +54,7 @@ const PaymentSuccess = () => {
         
         {/* Subtitle */}
         <p className="success-subtitle">
-          🎉 Welcome to Premium! You now have full access to all features.
+          🎉 Welcome to Kalima Premium! You now have full access to all features.
         </p>
 
         {/* Features Unlocked */}

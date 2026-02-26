@@ -267,4 +267,3 @@ const SmartUpgradePrompt = ({ trigger, onClose }) => {
 };
 
 export default SmartUpgradePrompt;
-
